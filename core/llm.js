@@ -22,19 +22,31 @@ function initModel() {
 }
 
 /**
- * Chama o Gemini para processar um prompt.
+ * Chama o Gemini para processar um prompt com histórico.
  * @param {string} prompt - O input do usuário.
+ * @param {Array} history - Array de mensagens passadas [{ role: 'user', content: '...' }, ...]
  * @returns {Promise<string>} - A resposta da IA.
  */
-export async function callGemini(prompt) {
+export async function callGemini(prompt, history = []) {
     const activeModel = initModel();
     if (!activeModel) {
-        throw new Error("Configuração da API Gemini pendente. Verifique as variáveis de ambiente na Vercel.");
+        throw new Error("Configuração da API Gemini pendente.");
     }
 
     try {
         const validatedPrompt = z.string().min(1).parse(prompt);
-        const result = await activeModel.generateContent(validatedPrompt);
+        
+        // Formatar histórico para o Gemini (ele espera roles específicas e partes)
+        const chatHistory = history.map(msg => ({
+            role: msg.role === 'user' ? 'user' : 'model',
+            parts: [{ text: msg.content }],
+        }));
+
+        const chat = activeModel.startChat({
+            history: chatHistory,
+        });
+
+        const result = await chat.sendMessage(validatedPrompt);
         const response = await result.response;
         return response.text();
     } catch (error) {

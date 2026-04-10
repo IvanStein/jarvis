@@ -1,15 +1,49 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import styles from "./page.module.css";
 import { Send, Bot, User, Sparkles } from 'lucide-react';
 
 export default function Home() {
-  const [messages, setMessages] = useState([
-    { role: 'assistant', text: 'Olá! Eu sou a AURA. Como posso ajudar você hoje?' }
-  ]);
+  const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
+  const [userId, setUserId] = useState('anon');
+  const messagesEndRef = useRef(null);
+
+  // Carregar ou gerar ID do usuário
+  useEffect(() => {
+    let storedId = localStorage.getItem('aura_user_id');
+    if (!storedId) {
+      storedId = 'user_' + Math.random().toString(36).substr(2, 9);
+      localStorage.setItem('aura_user_id', storedId);
+    }
+    setUserId(storedId);
+    loadHistory(storedId);
+  }, []);
+
+  // Scroll automático para a última mensagem
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
+
+  const loadHistory = async (id) => {
+    try {
+      const response = await fetch(`/api/history?userId=${id}`);
+      const data = await response.json();
+      if (Array.isArray(data)) {
+        const formatted = data.map(msg => ({
+          role: msg.role,
+          text: msg.content
+        }));
+        setMessages(formatted.length > 0 ? formatted : [
+          { role: 'assistant', text: 'Olá! Eu sou a AURA. Como posso ajudar você hoje?' }
+        ]);
+      }
+    } catch (error) {
+      console.error('Erro ao carregar histórico:', error);
+    }
+  };
 
   const sendMessage = async (e) => {
     e.preventDefault();
@@ -24,7 +58,7 @@ export default function Home() {
       const response = await fetch('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: input }),
+        body: JSON.stringify({ message: input, userId }),
       });
 
       const data = await response.json();
@@ -68,6 +102,7 @@ export default function Home() {
               <div className={styles.bubble}>...</div>
             </div>
           )}
+          <div ref={messagesEndRef} />
         </div>
 
         <form onSubmit={sendMessage} className={styles.inputArea}>
@@ -85,7 +120,7 @@ export default function Home() {
       </main>
 
       <footer className={styles.footer}>
-        Deploy Pronto para Vercel • 2026
+        AURA Jarvis System • Memory Enabled • 2026
       </footer>
     </div>
   );
