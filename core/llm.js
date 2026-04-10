@@ -9,9 +9,11 @@ function initModel() {
 
     const apiKey = process.env.GEMINI_API_KEY;
     if (!apiKey) {
-        console.warn("Aviso: GEMINI_API_KEY não configurada.");
+        console.warn("Aviso: GEMINI_API_KEY não encontrada no process.env.");
+        console.log("Variáveis disponíveis:", Object.keys(process.env).filter(k => k.includes('GEMINI') || k.includes('SUPABASE')));
         return null;
     }
+    console.log("API Gemini configurada com sucesso.");
 
     genAI = new GoogleGenerativeAI(apiKey);
     model = genAI.getGenerativeModel({ 
