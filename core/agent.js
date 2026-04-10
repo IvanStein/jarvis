@@ -1,7 +1,7 @@
 // core/agent.js
-const { callGemini } = require('./llm');
+import { callGemini } from './llm';
 
-async function runAgent(userInput, userId) {
+export async function runAgent(userInput, userId) {
     console.log(`Rodando agente para o usuário ${userId}: ${userInput}`);
     
     // 1. Buscar memória
@@ -14,5 +14,3 @@ async function runAgent(userInput, userId) {
     
     return { response };
 }
-
-module.exports = { runAgent };

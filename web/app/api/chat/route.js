@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-const { runAgent } = require('../../../../../core/agent');
+import { runAgent } from '../../../../core/agent';
 
 export async function POST(request) {
     try {
