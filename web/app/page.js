@@ -63,12 +63,14 @@ export default function Home() {
 
       const data = await response.json();
       
-      if (data.error) throw new Error(data.error);
+      if (!response.ok) {
+        throw new Error(data.error || 'Erro desconhecido na comunicação');
+      }
 
       setMessages(prev => [...prev, { role: 'assistant', text: data.response }]);
     } catch (error) {
-      setMessages(prev => [...prev, { role: 'assistant', text: 'Desculpe, ocorreu um erro na comunicação.' }]);
-      console.error(error);
+      setMessages(prev => [...prev, { role: 'error', text: `Erro: ${error.message}` }]);
+      console.error('Chat Error:', error);
     } finally {
       setLoading(false);
     }
@@ -89,7 +91,9 @@ export default function Home() {
           {messages.map((msg, i) => (
             <div key={i} className={`${styles.message} ${styles[msg.role]}`}>
               <div className={styles.avatar}>
-                {msg.role === 'assistant' ? <Bot size={20} /> : <User size={20} />}
+                {msg.role === 'assistant' ? <Bot size={20} /> : 
+                 msg.role === 'error' ? <Sparkles size={20} color="#ff4d4d" /> : 
+                 <User size={20} />}
               </div>
               <div className={styles.bubble}>
                 {msg.text}

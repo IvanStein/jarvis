@@ -51,7 +51,7 @@ export async function callGemini(prompt, history = []) {
         return response.text();
     } catch (error) {
         console.error("Erro detalhado do Gemini:", error);
-        throw new Error("Falha na comunicação com a AURA.");
+        throw new Error(`Erro na AURA: ${error.message || 'Falha na comunicação'}`);
     }
 }
 
