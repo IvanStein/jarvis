@@ -1,66 +1,92 @@
-import Image from "next/image";
+'use client';
+
+import { useState } from 'react';
 import styles from "./page.module.css";
+import { Send, Bot, User, Sparkles } from 'lucide-react';
 
 export default function Home() {
+  const [messages, setMessages] = useState([
+    { role: 'assistant', text: 'Olá! Eu sou a AURA. Como posso ajudar você hoje?' }
+  ]);
+  const [input, setInput] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  const sendMessage = async (e) => {
+    e.preventDefault();
+    if (!input.trim() || loading) return;
+
+    const userMessage = { role: 'user', text: input };
+    setMessages(prev => [...prev, userMessage]);
+    setInput('');
+    setLoading(true);
+
+    try {
+      const response = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message: input }),
+      });
+
+      const data = await response.json();
+      
+      if (data.error) throw new Error(data.error);
+
+      setMessages(prev => [...prev, { role: 'assistant', text: data.response }]);
+    } catch (error) {
+      setMessages(prev => [...prev, { role: 'assistant', text: 'Desculpe, ocorreu um erro na comunicação.' }]);
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
-    <div className={styles.page}>
-      <main className={styles.main}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className={styles.intro}>
-          <h1>To get started, edit the page.js file.</h1>
-          <p>
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <div className={styles.container}>
+      <header className={styles.header}>
+        <div className={styles.logo}>
+          <Sparkles size={24} className={styles.icon} />
+          <h1>AURA</h1>
         </div>
-        <div className={styles.ctas}>
-          <a
-            className={styles.primary}
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className={styles.logo}
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className={styles.secondary}
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+        <p>Assistente Universal Responsivo Autônomo</p>
+      </header>
+
+      <main className={styles.chatWindow}>
+        <div className={styles.messages}>
+          {messages.map((msg, i) => (
+            <div key={i} className={`${styles.message} ${styles[msg.role]}`}>
+              <div className={styles.avatar}>
+                {msg.role === 'assistant' ? <Bot size={20} /> : <User size={20} />}
+              </div>
+              <div className={styles.bubble}>
+                {msg.text}
+              </div>
+            </div>
+          ))}
+          {loading && (
+            <div className={`${styles.message} ${styles.assistant}`}>
+              <div className={styles.avatar}><Bot size={20} /></div>
+              <div className={styles.bubble}>...</div>
+            </div>
+          )}
         </div>
+
+        <form onSubmit={sendMessage} className={styles.inputArea}>
+          <input
+            type="text"
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            placeholder="Digite sua mensagem..."
+            disabled={loading}
+          />
+          <button type="submit" disabled={loading || !input.trim()}>
+            {loading ? '...' : <Send size={20} />}
+          </button>
+        </form>
       </main>
+
+      <footer className={styles.footer}>
+        Deploy Pronto para Vercel • 2026
+      </footer>
     </div>
   );
 }

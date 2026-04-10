@@ -1,17 +1,30 @@
 {
   "name": "jarvis",
   "version": "1.0.0",
-  "description": "",
+  "description": "Assistente Universal Responsivo Autônomo - AURA",
   "main": "index.js",
+  "workspaces": [
+    "web"
+  ],
   "scripts": {
+    "dev": "npm run dev -w web",
+    "build": "npm run build -w web",
+    "start": "npm run start -w web",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": [
+    "jarvis",
+    "aura",
+    "ai",
+    "assistant"
+  ],
+  "author": "Ivan Stein",
   "license": "ISC",
   "dependencies": {
+    "@google/generative-ai": "^0.24.1",
     "@supabase/supabase-js": "^2.103.0",
     "axios": "^1.15.0",
-    "dotenv": "^17.4.1"
+    "dotenv": "^17.4.1",
+    "zod": "^4.3.6"
   }
 }
