@@ -12,9 +12,10 @@ function initModel() {
     const apiKey = process.env.GEMINI_API_KEY?.trim()?.replace(/^["']|["']$/g, '');
     
     if (!apiKey) {
+        const foundKeys = Object.keys(process.env).filter(k => k.includes('GEMINI') || k.includes('SUPABASE'));
         console.warn("❌ Erro: GEMINI_API_KEY não encontrada no process.env ou está vazia.");
-        console.log("Diretório atual (CWD):", process.cwd());
-        console.log("Variáveis relacionadas encontradas:", Object.keys(process.env).filter(k => k.includes('GEMINI') || k.includes('SUPABASE')));
+        console.log("Variáveis de ambiente relacionadas que foram encontradas:", foundKeys.length > 0 ? foundKeys.join(', ') : 'NENHUMA');
+        console.log("DICA: Verifique se o nome no Vercel é exatamente GEMINI_API_KEY e se você fez o REDEPLOY.");
         return null;
     }
     
@@ -22,7 +23,7 @@ function initModel() {
 
     genAI = new GoogleGenerativeAI(apiKey);
     model = genAI.getGenerativeModel({ 
-        model: "gemini-2.0-flash",
+        model: "gemini-2.5-flash-lite",
         systemInstruction: "Você é AURA, um assistente inteligente pessoal.\n\nRegras:\n- Seja direto\n- Use contexto disponível\n- Use tools quando necessário\n- Aprenda com o usuário"
     });
     return model;
