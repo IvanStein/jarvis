@@ -83,7 +83,7 @@ export default function Home() {
           </div>
           <div>
             <h1 className="text-xl font-black tracking-tighter text-white uppercase italic">
-              AURA <span className="text-blue-500">IV</span>
+              JARVIS <span className="text-blue-500">AURA IV</span>
             </h1>
           </div>
         </div>
