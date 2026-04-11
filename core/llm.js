@@ -8,18 +8,31 @@ let model;
 function initModel() {
     if (model) return model;
 
-    // Limpar a chave de aspas ou espaços acidentais
+    // 1. Limpar a chave de aspas ou espaços acidentais
     const apiKey = process.env.GEMINI_API_KEY?.trim()?.replace(/^["']|["']$/g, '');
     
+    // 2. Diagnóstico se a chave não for encontrada
     if (!apiKey) {
         const foundKeys = Object.keys(process.env).filter(k => k.includes('GEMINI') || k.includes('SUPABASE'));
-        console.warn("❌ Erro: GEMINI_API_KEY não encontrada no process.env ou está vazia.");
-        console.log("Variáveis de ambiente relacionadas que foram encontradas:", foundKeys.length > 0 ? foundKeys.join(', ') : 'NENHUMA');
-        console.log("DICA: Verifique se o nome no Vercel é exatamente GEMINI_API_KEY e se você fez o REDEPLOY.");
-        return null;
+        const errorMsg = "Configuração da API Gemini pendente.";
+        const debugInfo = {
+            model: "gemini-2.5-flash-lite",
+            keyFound: false,
+            envKeysFound: foundKeys,
+            runtime: "Node.js (Next.js API)"
+        };
+        
+        console.warn(`❌ ${errorMsg}`, debugInfo);
+        
+        // Criar um erro especial com contexto de debug
+        const error = new Error(errorMsg);
+        error.debugContext = debugInfo;
+        throw error;
     }
     
-    console.log(`API Gemini configurada com sucesso (Tamanho: ${apiKey.length}).`);
+    // 3. Se chegou aqui, a chave existe.
+    const maskedKey = apiKey.substring(0, 6) + "..." + apiKey.substring(apiKey.length - 4);
+    console.log(`✅ API Gemini carregada: ${maskedKey} | Modelo: gemini-2.5-flash-lite`);
 
     genAI = new GoogleGenerativeAI(apiKey);
     model = genAI.getGenerativeModel({ 
@@ -36,15 +49,13 @@ function initModel() {
  * @returns {Promise<string>} - A resposta da IA.
  */
 export async function callGemini(prompt, history = []) {
+    // Chamar initModel que pode lançar o erro com debugContext
     const activeModel = initModel();
-    if (!activeModel) {
-        throw new Error("Configuração da API Gemini pendente.");
-    }
 
     try {
         const validatedPrompt = z.string().min(1).parse(prompt);
         
-        // Formatar histórico para o Gemini (ele espera roles específicas e partes)
+        // Formatar histórico para o Gemini
         const chatHistory = history.map(msg => ({
             role: msg.role === 'user' ? 'user' : 'model',
             parts: [{ text: msg.content }],
@@ -62,4 +73,3 @@ export async function callGemini(prompt, history = []) {
         throw new Error(`Erro na AURA: ${error.message || 'Falha na comunicação'}`);
     }
 }
-

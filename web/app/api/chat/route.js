@@ -16,6 +16,7 @@ export async function POST(request) {
         console.error('Erro na API /api/chat:', error);
         return NextResponse.json({ 
             error: error.message || 'Erro interno do servidor',
+            debug: error.debugContext || null,
             details: process.env.NODE_ENV === 'development' ? error.stack : undefined
         }, { status: 500 });
     }

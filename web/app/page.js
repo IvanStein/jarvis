@@ -64,12 +64,27 @@ export default function Home() {
       const data = await response.json();
       
       if (!response.ok) {
-        throw new Error(data.error || 'Erro desconhecido na comunicação');
+        const error = new Error(data.error || 'Erro desconhecido na comunicação');
+        error.debug = data.debug; // Anexar dados de debug ao erro
+        throw error;
       }
 
       setMessages(prev => [...prev, { role: 'assistant', text: data.response }]);
     } catch (error) {
-      setMessages(prev => [...prev, { role: 'error', text: `Erro: ${error.message}` }]);
+      let errorText = `Erro: ${error.message}`;
+      
+      // Adicionar informações de debug na tela se disponíveis
+      if (error.debug) {
+        const d = error.debug;
+        errorText += `\n\n[DIAGNÓSTICO]`;
+        errorText += `\n• Modelo: ${d.model}`;
+        errorText += `\n• Chave no sistema: ${d.keyFound ? '✅ Encontrada' : '❌ NÃO ENCONTRADA'}`;
+        if (d.envKeysFound?.length > 0) {
+          errorText += `\n• Vars detectadas: ${d.envKeysFound.join(', ')}`;
+        }
+      }
+
+      setMessages(prev => [...prev, { role: 'error', text: errorText }]);
       console.error('Chat Error:', error);
     } finally {
       setLoading(false);
