@@ -1,6 +1,6 @@
 // rag/ingest.js
 import { getSupabase } from '../config/supabase.js';
-import { YoutubeTranscript } from 'youtube-transcript-api';
+import YoutubeTranscript from 'youtube-transcript-api';
 
 /**
  * Adiciona conhecimento à biblioteca a partir de texto puro.
