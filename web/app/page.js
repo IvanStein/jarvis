@@ -1,146 +1,242 @@
-'use client';
-
-import { useState, useEffect, useRef } from 'react';
-import styles from "./page.module.css";
-import { Send, Bot, User, Sparkles } from 'lucide-react';
+"use client";
+import React, { useState, useEffect, useRef } from 'react';
+import { Send, Sparkles, User, Bot, Paperclip, Loader2, LayoutDashboard, MessageSquare, Shield, Zap, Heart, DollarSign, Settings2, Database } from 'lucide-react';
 
 export default function Home() {
-  const [messages, setMessages] = useState([]);
+  const [activeTab, setActiveTab] = useState('chat'); // 'chat' or 'dashboard'
+  const [messages, setMessages] = useState([
+    { role: 'assistant', text: 'Saudações, Ivan. O sistema está operacional. Como posso auxiliá-lo hoje?', module: 'JARVIS' }
+  ]);
   const [input, setInput] = useState('');
-  const [loading, setLoading] = useState(false);
-  const [userId, setUserId] = useState('anon');
-  const messagesEndRef = useRef(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isLearning, setIsLearning] = useState(false);
+  const [dashboardData, setDashboardData] = useState({ specialists: [], totalKnowledge: 0 });
+  const fileInputRef = useRef(null);
 
-  // Carregar ou gerar ID do usuário
   useEffect(() => {
-    let storedId = localStorage.getItem('aura_user_id');
-    if (!storedId) {
-      storedId = 'user_' + Math.random().toString(36).substr(2, 9);
-      localStorage.setItem('aura_user_id', storedId);
+    if (activeTab === 'dashboard') {
+      fetchDashboardData();
     }
-    setUserId(storedId);
-    loadHistory(storedId);
-  }, []);
+  }, [activeTab]);
 
-  // Scroll automático para a última mensagem
-  useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages]);
-
-  const loadHistory = async (id) => {
+  const fetchDashboardData = async () => {
     try {
-      const response = await fetch(`/api/history?userId=${id}`);
-      const data = await response.json();
-      if (Array.isArray(data)) {
-        const formatted = data.map(msg => ({
-          role: msg.role,
-          text: msg.content
-        }));
-        setMessages(formatted.length > 0 ? formatted : [
-          { role: 'assistant', text: 'Olá! Eu sou a AURA. Como posso ajudar você hoje?' }
-        ]);
-      }
-    } catch (error) {
-      console.error('Erro ao carregar histórico:', error);
+      const res = await fetch('/api/dashboard');
+      const data = await res.json();
+      setDashboardData(data);
+    } catch (e) {
+      console.error(e);
     }
   };
 
-  const sendMessage = async (e) => {
-    e.preventDefault();
-    if (!input.trim() || loading) return;
-
+  const sendMessage = async () => {
+    if (!input.trim() || isLoading) return;
     const userMessage = { role: 'user', text: input };
     setMessages(prev => [...prev, userMessage]);
     setInput('');
-    setLoading(true);
+    setIsLoading(true);
 
     try {
       const response = await fetch('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: input, userId }),
+        body: JSON.stringify({ message: input, userId: 'ivan_stein' }),
       });
-
       const data = await response.json();
-      
-      if (!response.ok) {
-        const error = new Error(data.error || 'Erro desconhecido na comunicação');
-        error.debug = data.debug; // Anexar dados de debug ao erro
-        throw error;
-      }
-
-      setMessages(prev => [...prev, { role: 'assistant', text: data.response }]);
+      setMessages(prev => [...prev, { role: 'assistant', text: data.response, module: data.module }]);
     } catch (error) {
-      let errorText = `Erro: ${error.message}`;
-      
-      // Adicionar informações de debug na tela se disponíveis
-      if (error.debug) {
-        const d = error.debug;
-        errorText += `\n\n[DIAGNÓSTICO]`;
-        errorText += `\n• Modelo: ${d.model}`;
-        errorText += `\n• Chave no sistema: ${d.keyFound ? '✅ Encontrada' : '❌ NÃO ENCONTRADA'}`;
-        if (d.envKeysFound?.length > 0) {
-          errorText += `\n• Vars detectadas: ${d.envKeysFound.join(', ')}`;
-        }
-      }
-
-      setMessages(prev => [...prev, { role: 'error', text: errorText }]);
-      console.error('Chat Error:', error);
+      setMessages(prev => [...prev, { role: 'error', text: 'Falha crítica na rede.' }]);
     } finally {
-      setLoading(false);
+      setIsLoading(false);
+    }
+  };
+
+  const handleFileUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    setIsLearning(true);
+    setMessages(prev => [...prev, { role: 'system', text: `Analisando: ${file.name}...` }]);
+    const formData = new FormData();
+    formData.append('file', file);
+    try {
+      const response = await fetch('/api/upload', { method: 'POST', body: formData });
+      const data = await response.json();
+      setMessages(prev => [...prev, { role: 'assistant', text: data.response, module: 'RAG' }]);
+    } catch (e) {
+      setMessages(prev => [...prev, { role: 'error', text: 'Falha no processamento do arquivo.' }]);
+    } finally {
+      setIsLearning(false);
     }
   };
 
   return (
-    <div className={styles.container}>
-      <header className={styles.header}>
-        <div className={styles.logo}>
-          <Sparkles size={24} className={styles.icon} />
-          <h1>AURA</h1>
+    <div className="flex flex-col h-screen bg-[#020617] text-slate-100 font-sans overflow-hidden">
+      {/* Dynamic Background Glow */}
+      <div className="fixed top-[-10%] left-[-10%] w-[40%] h-[40%] bg-blue-600/10 blur-[120px] rounded-full pointer-events-none"></div>
+      <div className="fixed bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-purple-600/10 blur-[120px] rounded-full pointer-events-none"></div>
+
+      {/* Header */}
+      <header className="flex items-center justify-between px-8 py-4 border-b border-white/5 bg-slate-900/20 backdrop-blur-xl z-50">
+        <div className="flex items-center gap-4">
+          <div className="p-2 bg-blue-500 rounded-xl shadow-lg shadow-blue-500/20">
+            <Sparkles className="w-6 h-6 text-white" />
+          </div>
+          <div>
+            <h1 className="text-xl font-black tracking-tighter text-white uppercase italic">
+              AURA <span className="text-blue-500">IV</span>
+            </h1>
+          </div>
         </div>
-        <p>Assistente Universal Responsivo Autônomo</p>
+
+        {/* Tab Switcher */}
+        <nav className="flex bg-slate-800/40 p-1 rounded-2xl border border-white/5">
+          <button 
+            onClick={() => setActiveTab('chat')}
+            className={`flex items-center gap-2 px-6 py-2 rounded-xl transition-all ${activeTab === 'chat' ? 'bg-blue-600 text-white shadow-lg' : 'text-slate-400 hover:text-white'}`}
+          >
+            <MessageSquare className="w-4 h-4" />
+            <span className="text-sm font-bold">Protocolo Chat</span>
+          </button>
+          <button 
+            onClick={() => setActiveTab('dashboard')}
+            className={`flex items-center gap-2 px-6 py-2 rounded-xl transition-all ${activeTab === 'dashboard' ? 'bg-blue-600 text-white shadow-lg' : 'text-slate-400 hover:text-white'}`}
+          >
+            <LayoutDashboard className="w-4 h-4" />
+            <span className="text-sm font-bold">Comando Central</span>
+          </button>
+        </nav>
+
+        <div className="flex items-center gap-2 px-4 py-2 bg-emerald-500/10 border border-emerald-500/20 rounded-full">
+            <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></div>
+            <span className="text-[10px] font-bold text-emerald-400 uppercase tracking-widest">Online</span>
+        </div>
       </header>
 
-      <main className={styles.chatWindow}>
-        <div className={styles.messages}>
-          {messages.map((msg, i) => (
-            <div key={i} className={`${styles.message} ${styles[msg.role]}`}>
-              <div className={styles.avatar}>
-                {msg.role === 'assistant' ? <Bot size={20} /> : 
-                 msg.role === 'error' ? <Sparkles size={20} color="#ff4d4d" /> : 
-                 <User size={20} />}
+      {activeTab === 'chat' ? (
+        <>
+          {/* Chat Container */}
+          <main className="flex-1 overflow-y-auto p-8 space-y-8 scroll-smooth z-10">
+            <div className="max-w-4xl mx-auto space-y-8">
+              {messages.map((msg, idx) => (
+                <div key={idx} className={`flex items-start gap-6 ${msg.role === 'user' ? 'flex-row-reverse' : ''} animate-in fade-in slide-in-from-bottom-4 duration-500`}>
+                  <div className={`p-3 rounded-2xl shrink-0 shadow-2xl ${
+                    msg.role === 'user' ? 'bg-gradient-to-br from-blue-500 to-blue-700' : 
+                    msg.role === 'system' ? 'bg-amber-500/20' : 'bg-slate-800/80 border border-white/5'
+                  }`}>
+                    {msg.role === 'user' ? <User className="w-6 h-6" /> : 
+                     msg.role === 'system' ? <Loader2 className="w-6 h-6 animate-spin text-amber-500" /> :
+                     <Bot className="w-6 h-6 text-blue-400" />}
+                  </div>
+                  <div className={`max-w-[85%] rounded-[2rem] p-6 backdrop-blur-md shadow-2xl relative ${
+                    msg.role === 'user' ? 'bg-blue-600/90 text-white rounded-tr-none' : 
+                    msg.role === 'error' ? 'bg-red-900/20 border border-red-500/50 text-red-100' :
+                    msg.role === 'system' ? 'bg-amber-500/5 border border-amber-500/20 text-amber-200 italic text-sm' :
+                    'bg-slate-900/80 border border-white/10 text-slate-100 rounded-tl-none'
+                  }`}>
+                    {msg.module && (
+                      <div className="absolute top-[-10px] left-8 px-3 py-0.5 bg-blue-500 rounded-full text-[9px] font-black uppercase tracking-tighter shadow-xl">
+                        {msg.module}
+                      </div>
+                    )}
+                    <span className="leading-relaxed leading-7">{msg.text}</span>
+                  </div>
+                </div>
+              ))}
+              {isLoading && (
+                <div className="flex gap-2 ml-16">
+                  <div className="w-2 h-2 bg-blue-500 rounded-full animate-bounce [animation-delay:-0.3s]"></div>
+                  <div className="w-2 h-2 bg-blue-500 rounded-full animate-bounce [animation-delay:-0.15s]"></div>
+                  <div className="w-2 h-2 bg-blue-500 rounded-full animate-bounce"></div>
+                </div>
+              )}
+            </div>
+          </main>
+
+          {/* Chat Footer */}
+          <footer className="p-8 bg-slate-950/50 backdrop-blur-2xl border-t border-white/5 z-50">
+            <div className="max-w-4xl mx-auto flex gap-4">
+              <div className="flex-1 relative flex items-center group">
+                <button 
+                  onClick={() => fileInputRef.current.click()}
+                  className="absolute left-4 p-2 text-slate-400 hover:text-blue-400 hover:bg-blue-500/10 rounded-xl transition-all"
+                >
+                  <Paperclip className="w-6 h-6" />
+                </button>
+                <input type="file" ref={fileInputRef} className="hidden" accept=".pdf" onChange={handleFileUpload} />
+                <input
+                  type="text"
+                  value={input}
+                  onChange={(e) => setInput(e.target.value)}
+                  onKeyDown={(e) => e.key === 'Enter' && sendMessage()}
+                  placeholder={isLearning ? "Sincronizando conhecimento..." : "Digite uma instrução para o sistema..."}
+                  className="w-full pl-16 pr-6 py-5 bg-slate-900/50 border border-white/10 rounded-[1.5rem] focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500/50 outline-none transition-all placeholder:text-slate-600 text-lg"
+                />
               </div>
-              <div className={styles.bubble}>
-                {msg.text}
+              <button
+                onClick={sendMessage}
+                className="p-5 bg-blue-600 hover:bg-blue-500 text-white rounded-2xl shadow-xl shadow-blue-600/20 transition-all active:scale-95 group"
+              >
+                <Send className="w-7 h-7 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
+              </button>
+            </div>
+          </footer>
+        </>
+      ) : (
+        /* Dashboard Container */
+        <main className="flex-1 overflow-y-auto p-12 z-10">
+          <div className="max-w-6xl mx-auto space-y-12">
+            {/* Stats Bar */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              <div className="bg-slate-900/40 p-8 rounded-[2rem] border border-white/5 backdrop-blur-xl relative group hover:border-blue-500/30 transition-all">
+                <div className="absolute top-8 right-8 p-3 bg-blue-500/10 rounded-2xl"><Database className="text-blue-400" /></div>
+                <p className="text-slate-400 font-bold uppercase tracking-widest text-[10px]">Cérebro Digital</p>
+                <h3 className="text-5xl font-black mt-2">{dashboardData.totalKnowledge}</h3>
+                <p className="text-slate-500 text-sm mt-1">Fragmentos de Conhecimento RAG</p>
+              </div>
+              <div className="bg-slate-900/40 p-8 rounded-[2rem] border border-white/5 backdrop-blur-xl relative group hover:border-emerald-500/30 transition-all">
+                <div className="absolute top-8 right-8 p-3 bg-emerald-500/10 rounded-2xl"><Zap className="text-emerald-400" /></div>
+                <p className="text-slate-400 font-bold uppercase tracking-widest text-[10px]">Estado dos Módulos</p>
+                <h3 className="text-5xl font-black mt-2">100%</h3>
+                <p className="text-slate-500 text-sm mt-1">Eficiência de Resposta</p>
+              </div>
+              <div className="bg-slate-900/40 p-8 rounded-[2rem] border border-white/5 backdrop-blur-xl relative group hover:border-purple-500/30 transition-all">
+                <div className="absolute top-8 right-8 p-3 bg-purple-500/10 rounded-2xl"><Settings2 className="text-purple-400" /></div>
+                <p className="text-slate-400 font-bold uppercase tracking-widest text-[10px]">Ivan Stein</p>
+                <h3 className="text-5xl font-black mt-2 uppercase">Alpha</h3>
+                <p className="text-slate-500 text-sm mt-1">Nível de Acesso do Usuário</p>
               </div>
             </div>
-          ))}
-          {loading && (
-            <div className={`${styles.message} ${styles.assistant}`}>
-              <div className={styles.avatar}><Bot size={20} /></div>
-              <div className={styles.bubble}>...</div>
+
+            {/* Specialist Cards */}
+            <h2 className="text-3xl font-black text-white px-2">Especialistas Ativos</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              {dashboardData.specialists.map((s, i) => (
+                <div key={i} className="group relative bg-[#0f172a] p-8 rounded-[2.5rem] border border-white/5 hover:border-blue-500/50 transition-all hover:-translate-y-2 overflow-hidden">
+                  {/* Glow Effect */}
+                  <div className="absolute -top-10 -right-10 w-32 h-32 bg-blue-600/10 blur-[50px] group-hover:bg-blue-600/20 transition-all"></div>
+                  
+                  <div className="p-4 bg-slate-800 rounded-[1.5rem] w-fit mb-6 ring-1 ring-white/10">
+                    {s.id === 'CODING' && <Zap className="text-blue-400" />}
+                    {s.id === 'FINANCE' && <DollarSign className="text-emerald-400" />}
+                    {s.id === 'HEALTH' && <Heart className="text-rose-400" />}
+                    {s.id === 'PERSONAL' && <Shield className="text-purple-400" />}
+                  </div>
+
+                  <h3 className="text-2xl font-black text-white mb-2">{s.name}</h3>
+                  <p className="text-slate-400 text-xs font-bold uppercase tracking-widest mb-4">{s.id}</p>
+                  <p className="text-slate-400 text-sm leading-relaxed mb-8 h-20 overflow-hidden line-clamp-3">
+                    {s.instruction}
+                  </p>
+
+                  <button className="w-full py-4 bg-slate-800 hover:bg-blue-600 rounded-2xl text-xs font-black uppercase tracking-widest transition-all">
+                    Calibrar Módulo
+                  </button>
+                </div>
+              ))}
             </div>
-          )}
-          <div ref={messagesEndRef} />
-        </div>
-
-        <form onSubmit={sendMessage} className={styles.inputArea}>
-          <input
-            type="text"
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            placeholder="Digite sua mensagem..."
-            disabled={loading}
-          />
-          <button type="submit" disabled={loading || !input.trim()}>
-            {loading ? '...' : <Send size={20} />}
-          </button>
-        </form>
-      </main>
-
-      <footer className={styles.footer}>
-        AURA Jarvis System • Memory Enabled • 2026
-      </footer>
+          </div>
+        </main>
+      )}
     </div>
   );
 }

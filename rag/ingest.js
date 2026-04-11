@@ -1,6 +1,7 @@
 // rag/ingest.js
 import { getSupabase } from '../config/supabase.js';
 import YoutubeTranscript from 'youtube-transcript-api';
+import pdf from 'pdf-parse';
 
 /**
  * Adiciona conhecimento à biblioteca a partir de texto puro.
@@ -58,13 +59,45 @@ export async function learnFromYouTube(url) {
         });
 
         return { 
-            response: `✅ Ivan, terminei de processar o vídeo. Agora tenho ${result.chunks} novos fragmentos de conhecimento baseados nessa transcrição.`,
+            response: `✅ Ivan, analisei o vídeo do YouTube. Extraí a transcrição e agora possuo ${result.chunks} novos blocos de contexto sobre este assunto em minha base de dados.`,
             success: true 
         };
     } catch (error) {
         console.error("Erro ao aprender com YouTube:", error);
         return { 
             response: `❌ Não consegui extrair a legenda deste vídeo. Verifique se ele possui legendas disponíveis (CC).`,
+            success: false 
+        };
+    }
+}
+
+/**
+ * Extrai texto de um arquivo PDF e aprende.
+ */
+export async function learnFromPDF(fileBuffer, fileName) {
+    try {
+        console.log(`[RAG] Lendo PDF: ${fileName}`);
+        
+        // Extrair texto do PDF
+        const data = await pdf(fileBuffer);
+        const fullText = data.text;
+
+        // Ingerir o texto
+        const result = await ingestKnowledge(fullText, {
+            title: `Livro/PDF: ${fileName}`,
+            type: 'pdf',
+            pages: data.numpages,
+            date: new Date().toISOString()
+        });
+
+        return { 
+            response: `📚 **Conhecimento Documental Absorvido**\n\nIvan, o arquivo "${fileName}" foi processado. Li as ${data.numpages} páginas e distribuí o conhecimento em ${result.chunks} fragmentos indexados. Estou pronto para responder sobre este conteúdo.`,
+            success: true 
+        };
+    } catch (error) {
+        console.error("Erro ao aprender com PDF:", error);
+        return { 
+            response: `❌ Erro técnico ao processar o PDF. Certifique-se de que é um arquivo válido.`,
             success: false 
         };
     }
