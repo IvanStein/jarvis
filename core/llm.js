@@ -1,3 +1,4 @@
+import 'dotenv/config';
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { z } from "zod";
 
@@ -7,13 +8,17 @@ let model;
 function initModel() {
     if (model) return model;
 
-    const apiKey = process.env.GEMINI_API_KEY;
+    // Limpar a chave de aspas ou espaços acidentais
+    const apiKey = process.env.GEMINI_API_KEY?.trim()?.replace(/^["']|["']$/g, '');
+    
     if (!apiKey) {
-        console.warn("Aviso: GEMINI_API_KEY não encontrada no process.env.");
-        console.log("Variáveis disponíveis:", Object.keys(process.env).filter(k => k.includes('GEMINI') || k.includes('SUPABASE')));
+        console.warn("❌ Erro: GEMINI_API_KEY não encontrada no process.env ou está vazia.");
+        console.log("Diretório atual (CWD):", process.cwd());
+        console.log("Variáveis relacionadas encontradas:", Object.keys(process.env).filter(k => k.includes('GEMINI') || k.includes('SUPABASE')));
         return null;
     }
-    console.log("API Gemini configurada com sucesso.");
+    
+    console.log(`API Gemini configurada com sucesso (Tamanho: ${apiKey.length}).`);
 
     genAI = new GoogleGenerativeAI(apiKey);
     model = genAI.getGenerativeModel({ 
