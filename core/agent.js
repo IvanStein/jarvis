@@ -1,23 +1,47 @@
 // core/agent.js
 import { callGemini } from './llm.js';
-import { saveMessage, getLastMessages } from '../memory/memory.js';
+import { saveMessage, getLastMessages, getUserFacts, getSpecialistConfig, updateSpecialistConfig } from '../memory/memory.js';
+import { SPECIALISTS, routeToSpecialist } from './specialists.js';
+import { learnFromYouTube } from '../rag/ingest.js';
 
 export async function runAgent(userInput, userId) {
-    console.log(`Rodando agente para o usuário ${userId}: ${userInput}`);
+    console.log(`[ORQUESTRADOR] Analisando requisição...`);
+
+    // 1. Comando de TREINAMENTO de Especialista
+    if (userInput.startsWith('/treinar')) {
+        const parts = userInput.split(':');
+        if (parts.length >= 2) {
+            const specialistId = parts[0].replace('/treinar', '').trim().toUpperCase();
+            const newContent = parts.slice(1).join(':').trim();
+            const success = await updateSpecialistConfig(specialistId, newContent);
+            if (success) return { response: `✅ Módulo ${specialistId} recalibrado.`, module: "Sistema" };
+        }
+    }
+
+    // 2. Detecção de APRENDIZAGEM (YouTube)
+    if (userInput.toLowerCase().includes('youtube.com') || userInput.toLowerCase().includes('youtu.be')) {
+        const urlMatch = userInput.match(/(https?:\/\/[^\s]+)/);
+        if (urlMatch) {
+            const result = await learnFromYouTube(urlMatch[0]);
+            return { response: result.response, module: "RAG" };
+        }
+    }
+
+    // 3. Identificar o especialista necessário
+    const specialistKey = routeToSpecialist(userInput);
+    const dbConfig = await getSpecialistConfig(specialistKey);
+    const specialistInstructions = dbConfig ? dbConfig.instruction : (SPECIALISTS[specialistKey]?.instruction || "Agindo como Jarvis (Geral)");
+
+    // 4. Buscar memórias e histórico
+    const userFacts = await getUserFacts(userId);
+    const recentHistory = await getLastMessages(userId, 5);
     
-    // 1. Buscar memória (Contexto)
-    const history = await getLastMessages(userId, 10);
+    // 5. Chamada ao LLM
+    const contextPrefix = userFacts ? `[MEMÓRIA DE IVAN: ${userFacts}]\n` : "";
+    const responseText = await callGemini(userInput, recentHistory, `${specialistInstructions}\n${contextPrefix}`);
     
-    // 2. Buscar contexto (RAG - Futuro)
-    
-    // 3. Decidir tools (Skills - Futuro)
-    
-    // 4. Chamar LLM com o histórico
-    const responseText = await callGemini(userInput, history);
-    
-    // 5. Salvar memória (A pergunta e a resposta)
     await saveMessage(userId, 'user', userInput);
     await saveMessage(userId, 'assistant', responseText);
     
-    return { response: responseText };
+    return { response: responseText, module: dbConfig ? dbConfig.name : (specialistKey || "Jarvis") };
 }
