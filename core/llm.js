@@ -17,7 +17,7 @@ function initModel() {
 
     genAI = new GoogleGenerativeAI(apiKey);
     model = genAI.getGenerativeModel({ 
-        model: "gemini-2.0-flash-lite-preview-02-05",
+        model: "gemini-2.0-flash",
         systemInstruction: "Você é AURA, um assistente inteligente pessoal.\n\nRegras:\n- Seja direto\n- Use contexto disponível\n- Use tools quando necessário\n- Aprenda com o usuário"
     });
     return model;
