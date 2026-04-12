@@ -244,8 +244,6 @@ export default function Home() {
           </footer>
         </>
       ) : (
-        /* Dashboard Container */
-        {/* Same dashboard content, updated colors for zinc-900 */}
         <main className="flex-1 overflow-y-auto p-6 md:p-12 z-10 w-full mx-auto max-w-7xl">
           <div className="space-y-12 pb-10">
             
@@ -286,7 +284,6 @@ export default function Home() {
               
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
                 {(dashboardData.specialists && dashboardData.specialists.length > 0) ? dashboardData.specialists.map((s, i) => (
-                   {/* Specialist code block here, using updated zinc colors */} 
                    <div key={i} className="flex flex-col p-8 bg-zinc-900 border border-zinc-800 rounded-[2rem] hover:border-blue-500/50 hover:bg-zinc-800/80 transition-all shadow-xl group duration-300 hover:-translate-y-2">
                     <div className="flex items-center gap-5 mb-8">
                       <div className="p-4 rounded-2xl bg-zinc-800 text-zinc-400 group-hover:text-blue-400 group-hover:bg-blue-500/10 transition-colors">
