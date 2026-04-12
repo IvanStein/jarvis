@@ -70,259 +70,240 @@ export default function Home() {
   };
 
   return (
-    <div className="flex flex-col h-screen bg-[#09090b] text-zinc-200 font-sans antialiased selection:bg-blue-500/30">
+    <div className="flex h-screen bg-[#212121] text-zinc-100 font-sans antialiased">
       
-      {/* 1. HEADER EXIBIÇÃO FIXA NO TOPO */}
-      <header className="flex-none flex items-center justify-between px-6 py-4 bg-[#09090b] border-b border-zinc-800/80 z-20">
-        <div className="flex items-center gap-3">
-          <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-zinc-900 border border-zinc-700">
-            <Sparkles className="w-4 h-4 text-blue-500" />
+      {/* 1. SIDEBAR (Estilo ChatGPT) */}
+      <aside className="hidden md:flex flex-col w-[260px] bg-[#171717] px-3 py-4 shrink-0">
+        <div className="flex items-center gap-2 px-3 py-2 mb-6 cursor-pointer hover:bg-zinc-800/50 rounded-lg transition-colors">
+          <div className="w-8 h-8 rounded-full bg-white flex items-center justify-center shrink-0">
+            <Sparkles className="w-5 h-5 text-black" />
           </div>
-          <h1 className="text-base font-semibold tracking-wide text-zinc-100 flex items-center gap-2">
-            JARVIS <span className="text-zinc-600 font-normal">/</span> <span className="font-medium">AURA IV</span>
-          </h1>
+          <span className="font-semibold text-white tracking-wide">Jarvis / AURA</span>
         </div>
 
-        {/* Tab Switcher */}
-        <div className="hidden sm:flex bg-zinc-900 p-1 rounded-xl border border-zinc-800 shadow-inner">
+        <div className="flex-1 overflow-y-auto space-y-1">
           <button 
             onClick={() => setActiveTab('chat')}
-            className={`px-6 py-1.5 rounded-lg text-sm transition-all ${
-              activeTab === 'chat' 
-                ? 'bg-zinc-800 text-zinc-100 shadow font-medium' 
-                : 'text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800/50'
+            className={`w-full flex items-center gap-3 px-3 py-3 rounded-lg text-sm transition-colors ${
+              activeTab === 'chat' ? 'bg-zinc-800/80 text-white font-medium' : 'text-zinc-400 hover:bg-zinc-800/50 hover:text-zinc-200'
             }`}
           >
-            Terminal
+            <MessageSquare className="w-4 h-4" />
+            Terminal de IA
           </button>
+          
           <button 
             onClick={() => setActiveTab('dashboard')}
-            className={`px-6 py-1.5 rounded-lg text-sm transition-all ${
-              activeTab === 'dashboard' 
-                ? 'bg-zinc-800 text-zinc-100 shadow font-medium' 
-                : 'text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800/50'
+            className={`w-full flex items-center gap-3 px-3 py-3 rounded-lg text-sm transition-colors ${
+              activeTab === 'dashboard' ? 'bg-zinc-800/80 text-white font-medium' : 'text-zinc-400 hover:bg-zinc-800/50 hover:text-zinc-200'
             }`}
           >
-            Dashboard
+            <LayoutDashboard className="w-4 h-4" />
+            Comando Central
           </button>
         </div>
 
-        {/* Status */}
-        <div className="flex items-center gap-2">
-          <div className="relative flex h-2 w-2">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-            <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+        {/* User Profile Area Sidebar */}
+        <div className="mt-auto pt-4 flex items-center gap-3 px-3 py-3 hover:bg-zinc-800/50 rounded-lg cursor-pointer transition-colors">
+          <div className="w-8 h-8 rounded-full bg-indigo-600 flex items-center justify-center shrink-0">
+            <User className="w-4 h-4 text-white" />
           </div>
-          <span className="hidden sm:inline-block text-[11px] font-medium text-zinc-400 uppercase tracking-wider">
-            Online
-          </span>
+          <div className="flex-1 truncate">
+            <p className="text-sm font-medium text-white truncate">Admin (Ivan)</p>
+            <p className="text-xs text-zinc-500 truncate">Sistemas Operacionais</p>
+          </div>
         </div>
-      </header>
+      </aside>
 
-      {/* Mobile Switcher (abaixo do header em telas pequenas) */}
-      <div className="sm:hidden flex-none p-3 border-b border-zinc-800/80 bg-[#09090b]">
-        <div className="flex bg-zinc-900 w-full p-1 rounded-lg border border-zinc-800">
-           <button 
-            onClick={() => setActiveTab('chat')}
-            className={`flex-1 py-2 text-xs rounded-md transition-all ${
-              activeTab === 'chat' ? 'bg-zinc-800 text-zinc-100 font-medium shadow' : 'text-zinc-400'
-            }`}
-          > Chat </button>
-          <button 
-            onClick={() => setActiveTab('dashboard')}
-            className={`flex-1 py-2 text-xs rounded-md transition-all ${
-              activeTab === 'dashboard' ? 'bg-zinc-800 text-zinc-100 font-medium shadow' : 'text-zinc-400'
-            }`}
-          > Dashboard </button>
-        </div>
-      </div>
-
-      {/* 2. ÁREA DE CONTEÚDO PRINCIPAL (OCUPA RESTO DA TELA) */}
-      <main className="flex-1 min-h-0 relative flex flex-col bg-[#09090b]">
+      {/* 2. ÁREA PRINCIPAL */}
+      <main className="flex-1 min-w-0 flex flex-col relative h-full bg-[#212121]">
         
-        {activeTab === 'chat' ? (
-          <>
-            {/* 2A. MENSAGENS NO CHAT (SCROLL) */}
-            <div className="flex-1 overflow-y-auto px-4 py-6 md:px-8 md:py-10 scroll-smooth">
-              <div className="max-w-3xl mx-auto space-y-8 pb-4">
-                {messages.map((msg, idx) => (
-                  <div key={idx} className={`flex gap-4 ${msg.role === 'user' ? 'flex-row-reverse' : 'flex-row'} animate-in fade-in duration-300`}>
-                    
-                    {/* Avatar */}
-                    <div className="shrink-0 mt-0.5">
-                      {msg.role === 'user' ? (
-                        <div className="w-9 h-9 rounded-full bg-blue-600 text-white flex items-center justify-center shadow-lg shadow-blue-900/20">
-                          <User className="w-4 h-4" />
-                        </div>
-                      ) : msg.role === 'system' ? (
-                         <div className="w-9 h-9 flex items-center justify-center">
-                          <Loader2 className="w-4 h-4 animate-spin text-zinc-500" />
-                        </div>
-                      ) : (
-                        <div className="w-9 h-9 rounded-xl bg-zinc-900 border border-zinc-700 flex items-center justify-center shadow-md">
-                          <Bot className="w-5 h-5 text-blue-400" />
-                        </div>
-                      )}
+        {/* Mobile Header */}
+        <header className="md:hidden flex items-center justify-between px-4 h-14 border-b border-white/5 bg-[#212121]">
+           <span className="font-medium text-zinc-200">Jarvis</span>
+           <div className="flex gap-2">
+             <button onClick={() => setActiveTab('chat')} className={`p-2 rounded-md ${activeTab === 'chat' ? 'text-white bg-white/10' : 'text-zinc-400'}`}><MessageSquare className="w-5 h-5"/></button>
+             <button onClick={() => setActiveTab('dashboard')} className={`p-2 rounded-md ${activeTab === 'dashboard' ? 'text-white bg-white/10' : 'text-zinc-400'}`}><LayoutDashboard className="w-5 h-5"/></button>
+           </div>
+        </header>
+
+        {/* Modelo Dropdown Simulação (Topo Esquerdo Desktop) */}
+        {activeTab === 'chat' && (
+          <div className="hidden md:flex items-center px-4 h-14 sticky top-0 z-10 bg-[#212121]/90 backdrop-blur-sm">
+             <div className="flex items-center gap-2 px-3 py-1.5 hover:bg-white/5 rounded-lg cursor-pointer text-zinc-300 font-medium">
+               Aura IV <span className="text-zinc-500 text-xs">▼</span>
+             </div>
+          </div>
+        )}
+
+        {/* CONTEÚDO */}
+        <div className="flex-1 overflow-y-auto px-4 w-full flex flex-col scroll-smooth">
+          
+          {activeTab === 'chat' ? (
+            <div className="w-full max-w-3xl mx-auto flex-1 flex flex-col py-6 md:py-8 space-y-8 pb-32">
+              
+              {/* Tela Inicial Sem Mensagens */}
+              {messages.length === 0 && (
+                <div className="flex-1 flex flex-col items-center justify-center text-center mt-20">
+                  <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center mb-6 shadow-xl">
+                     <Sparkles className="w-8 h-8 text-black" />
+                  </div>
+                  <h2 className="text-2xl font-medium text-white mb-2">Como posso ajudar hoje?</h2>
+                  <p className="text-zinc-400 max-w-sm">Eu sou Aura, o núcleo de inteligência de Jarvis. Posso processar código, planilhas, ou dados variados.</p>
+                </div>
+              )}
+
+              {/* Feed de Mensagens Estilo Claude/ChatGPT */}
+              {messages.map((msg, idx) => (
+                <div key={idx} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'} w-full animate-in fade-in duration-300`}>
+                  
+                  {msg.role === 'user' ? (
+                    /* Bubble User: Rounded pill, gray backround */
+                    <div className="max-w-[80%] bg-[#2f2f2f] text-zinc-100 px-5 py-3 rounded-3xl text-[16px] leading-relaxed">
+                      {msg.text}
                     </div>
+                  ) : (
+                    /* Bubble AI: Flush left, plain text, icon on left */
+                    <div className="w-full max-w-3xl flex gap-4">
+                      
+                      <div className="shrink-0 mt-1">
+                        {msg.role === 'system' ? (
+                           <div className="w-8 h-8 rounded-full border border-white/10 flex items-center justify-center bg-[#171717]">
+                             <Loader2 className="w-4 h-4 animate-spin text-zinc-400" />
+                           </div>
+                        ) : (
+                           <div className="w-8 h-8 rounded-full bg-white flex items-center justify-center shadow-lg">
+                             <Sparkles className="w-5 h-5 text-black" />
+                           </div>
+                        )}
+                      </div>
 
-                    {/* Conteúdo */}
-                    <div className={`flex flex-col gap-1 max-w-[85%] ${msg.role === 'user' ? 'items-end' : 'items-start'}`}>
-                      {/* Name Plate */}
-                      {msg.role !== 'system' && (
-                        <div className="flex items-center gap-2 mb-1">
-                          <span className="text-xs font-semibold text-zinc-400">
-                            {msg.role === 'user' ? 'Você' : 'AURA IV'}
-                          </span>
-                          {msg.module && (
-                            <span className="px-2 py-0.5 rounded text-[10px] font-bold tracking-widest text-[#09090b] bg-blue-400">
-                              {msg.module}
-                            </span>
-                          )}
-                        </div>
-                      )}
-
-                      {/* Balão / Texto */}
-                      <div className={`text-[15px] leading-relaxed ${
-                        msg.role === 'user' ? 'bg-zinc-800 text-zinc-100 px-5 py-3 rounded-2xl rounded-tr-sm border border-zinc-700' : 
-                        msg.role === 'error' ? 'bg-red-950/50 border border-red-900/50 text-red-300 px-5 py-3 rounded-2xl' :
-                        msg.role === 'system' ? 'text-zinc-500 italic text-sm py-1' : 
-                        'text-zinc-300 py-2' // IA tem fundo invisível para ler melhor
-                      }`}>
-                        {msg.text}
+                      <div className="flex-1 min-w-0 mt-1.5 space-y-1">
+                         {msg.module && (
+                           <div className="text-xs font-semibold text-zinc-500 uppercase tracking-widest mb-2">
+                             {msg.module}
+                           </div>
+                         )}
+                         <div className={`text-[16px] leading-relaxed text-zinc-200 ${msg.role === 'error' ? 'text-red-400' : ''}`}>
+                            {msg.text}
+                         </div>
                       </div>
                     </div>
-                  </div>
-                ))}
+                  )}
+                </div>
+              ))}
 
-                {/* Loading State */}
-                {isLoading && (
-                  <div className="flex gap-4 animate-in fade-in duration-300">
-                    <div className="w-9 h-9 rounded-xl bg-zinc-900 border border-zinc-700 flex items-center justify-center shrink-0">
-                      <Bot className="w-5 h-5 text-zinc-600 animate-pulse" />
-                    </div>
-                    <div className="flex flex-col justify-center gap-1.5">
-                       <span className="text-xs font-semibold text-zinc-500">PROCESSANDO...</span>
-                       <div className="flex items-center gap-1 mt-1">
-                          <div className="w-1.5 h-1.5 bg-blue-500 rounded-full animate-bounce"></div>
-                          <div className="w-1.5 h-1.5 bg-blue-500 rounded-full animate-bounce" style={{animationDelay: '150ms'}}></div>
-                          <div className="w-1.5 h-1.5 bg-blue-500 rounded-full animate-bounce" style={{animationDelay: '300ms'}}></div>
+              {isLoading && (
+                 <div className="w-full max-w-3xl flex gap-4 animate-in fade-in">
+                    <div className="shrink-0 mt-1">
+                       <div className="w-8 h-8 rounded-full bg-white flex items-center justify-center shadow-lg">
+                         <Sparkles className="w-5 h-5 text-black animate-pulse" />
                        </div>
                     </div>
-                  </div>
-                )}
-              </div>
+                    <div className="flex-1 min-w-0 mt-2.5 flex items-center gap-1.5">
+                       <div className="w-2 h-2 bg-zinc-500 rounded-full animate-bounce"></div>
+                       <div className="w-2 h-2 bg-zinc-500 rounded-full animate-bounce" style={{animationDelay: '150ms'}}></div>
+                       <div className="w-2 h-2 bg-zinc-500 rounded-full animate-bounce" style={{animationDelay: '300ms'}}></div>
+                    </div>
+                 </div>
+              )}
             </div>
+          ) : (
+            /* Dashboard de IA - Visão de Painel de Controle */
+            <div className="w-full max-w-5xl mx-auto flex-1 flex flex-col py-10 pb-20">
+               <h2 className="text-3xl font-semibold text-white mb-2">Comando Central</h2>
+               <p className="text-zinc-400 mb-10">Métricas de inferência e capacidade computacional dos agentes conectados.</p>
+               
+               {/* Metrics Grid */}
+               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+                  {[
+                    { label: 'Cérebro RAG', value: dashboardData.totalKnowledge, desc: 'Clusters de conhecimento isolados', icon: Database },
+                    { label: 'Status da Rede', value: '100%', desc: 'Infraestrutura Otimizada', icon: Zap },
+                    { label: 'Privilégio', value: 'Root', desc: 'Acesso sem restrições', icon: Settings2 },
+                  ].map((stat, i) => (
+                    <div key={i} className="flex flex-col p-6 bg-[#2f2f2f] rounded-2xl">
+                      <div className="flex items-center justify-between mb-4 text-zinc-400">
+                         <span className="text-sm font-medium">{stat.label}</span>
+                         <stat.icon className="w-4 h-4" />
+                      </div>
+                      <h3 className="text-3xl font-semibold text-white mt-auto">{stat.value}</h3>
+                      <p className="text-xs text-zinc-500 mt-1">{stat.desc}</p>
+                    </div>
+                  ))}
+               </div>
 
-            {/* 2B. INPUT FIXO NO RODAPÉ DO CHAT */}
-            <div className="flex-none p-4 md:px-8 border-t border-zinc-800 bg-[#09090b]">
-              <div className="max-w-3xl mx-auto">
-                <div className="relative flex items-center bg-zinc-900 border border-zinc-700 rounded-2xl shadow-xl focus-within:border-blue-500/50 focus-within:ring-1 focus-within:ring-blue-500/50 transition-all">
+               <h3 className="text-lg font-medium text-white mb-4">Bibliotecas Especializadas</h3>
+               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {((dashboardData.specialists && dashboardData.specialists.length > 0) ? dashboardData.specialists : [
+                    { id: 'CODING', name: 'Software Engineer', desc: 'Padrões avançados de arquitetura e debugging.' },
+                    { id: 'FINANCE', name: 'Analista de Dados', desc: 'Projeções e integração direta com planilhas.' },
+                    { id: 'HEALTH', name: 'Health Advisor', desc: 'Análise de protocolos e estudos científicos.' },
+                    { id: 'PERSONAL', name: 'Assistente Executivo', desc: 'Automação de e-mails, atas e produtividade diária.' },
+                  ]).map((s, i) => (
+                     <div key={i} className="flex items-center gap-4 p-5 bg-[#2A2A2A] rounded-2xl hover:bg-[#333333] transition-colors cursor-pointer border border-[#3A3A3A]">
+                        <div className="w-12 h-12 bg-[#212121] rounded-xl flex items-center justify-center shrink-0 border border-white/5">
+                           <Bot className="w-6 h-6 text-zinc-300" />
+                        </div>
+                        <div className="flex-1">
+                           <h4 className="text-[15px] font-medium text-white mb-0.5 flex items-center justify-between">
+                             {s.name}
+                             <span className="text-[10px] bg-[#171717] text-zinc-400 px-2 py-0.5 rounded uppercase font-bold tracking-wider">{s.id}</span>
+                           </h4>
+                           <p className="text-[13px] text-zinc-400 line-clamp-1">{s.desc || s.instruction}</p>
+                        </div>
+                     </div>
+                  ))}
+               </div>
+            </div>
+          )}
+
+          {/* INPUT BAR FLUTUANTE CENTRALIZADA (Estilo ChatGPT) */}
+          {activeTab === 'chat' && (
+            <div className="fixed bottom-0 left-0 md:left-[260px] right-0 bg-gradient-to-t from-[#212121] via-[#212121] to-transparent pt-8 pb-6 px-4">
+              <div className="max-w-3xl mx-auto relative">
+                {/* O Input Container Rounded */}
+                <div className="bg-[#2f2f2f] rounded-[24px] rounded-br-[24px] pr-2 pl-4 py-2 flex items-end shadow-xl shadow-black/20 focus-within:bg-[#383838] transition-colors">
                   
                   <button 
                     onClick={() => fileInputRef.current.click()}
-                    className="p-4 text-zinc-400 hover:text-zinc-100 transition-colors rounded-l-2xl"
-                    title="Anexar Arquivo RAG"
+                    className="p-2 mb-1 shrink-0 text-zinc-400 hover:text-white transition-colors rounded-full hover:bg-white/5"
+                    title="Anexar arquivos RAG"
                   >
                     <Paperclip className="w-5 h-5" />
                   </button>
                   <input type="file" ref={fileInputRef} className="hidden" accept=".pdf" onChange={handleFileUpload} />
                   
-                  <input
-                    type="text"
+                  <textarea
                     value={input}
                     onChange={(e) => setInput(e.target.value)}
-                    onKeyDown={(e) => e.key === 'Enter' && sendMessage()}
-                    placeholder={isLearning ? "Indexando base neural..." : "Envie instrução para Jarvis..."}
-                    className="flex-1 py-4 px-1 bg-transparent text-zinc-100 placeholder:text-zinc-500 focus:outline-none text-[15px] font-medium"
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' && !e.shiftKey) {
+                        e.preventDefault();
+                        sendMessage();
+                      }
+                    }}
+                    rows="1"
+                    placeholder="Mensagem para Jarvis..."
+                    className="flex-1 max-h-32 min-h-[44px] bg-transparent text-white placeholder:text-zinc-500 focus:outline-none resize-none py-[10px] px-2 text-[16px] leading-relaxed overflow-y-auto"
+                    style={{ fieldSizing: 'content' }}
                   />
                   
-                  <div className="p-2 pl-1">
-                    <button
-                      onClick={sendMessage}
-                      disabled={!input.trim() || isLoading}
-                      className="p-2.5 bg-zinc-100 text-[#09090b] hover:bg-white disabled:bg-zinc-800 disabled:text-zinc-600 rounded-xl transition-all font-semibold shadow-sm flex items-center justify-center"
-                    >
-                      <Send className="w-4 h-4 ml-0.5" />
-                    </button>
-                  </div>
+                  <button
+                    onClick={sendMessage}
+                    disabled={!input.trim() || isLoading}
+                    className="p-2.5 mb-1 shrink-0 bg-white text-black rounded-full hover:bg-zinc-200 disabled:bg-zinc-700 disabled:text-zinc-500 transition-colors ml-2"
+                  >
+                    <Send className="w-4 h-4 ml-0.5" />
+                  </button>
                 </div>
                 
-                <div className="text-center mt-3">
-                   <p className="text-[11px] text-zinc-500">AURA pode cometer erros ao interagir com múltiplas APIs. Verifique.</p>
+                <div className="text-center mt-2.5">
+                   <p className="text-xs text-zinc-500">Jarvis pode cometer erros. Considere verificar as informações críticas antes de salvar.</p>
                 </div>
               </div>
             </div>
-          </>
-        ) : (
-          
-          /* 3. DASHBOARD (SCROLL SEPARADO) */
-          <div className="flex-1 overflow-y-auto p-6 md:p-10">
-            <div className="max-w-5xl mx-auto space-y-10 pb-10">
-              
-              <div>
-                 <h2 className="text-3xl font-semibold text-zinc-100 tracking-tight">Comando Central</h2>
-                 <p className="text-zinc-400 mt-2">Visão geral do sistema e telemetria de agentes RAG.</p>
-              </div>
-
-              {/* Grid de Estatísticas Fixo e Seguro */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                {[
-                  { label: 'Cérebro Digital', value: dashboardData.totalKnowledge, desc: 'Fragmentos indexados', icon: Database, color: 'text-blue-400', bg: 'bg-blue-500/10' },
-                  { label: 'Status da Rede', value: '100%', desc: 'Sistemas operacionais', icon: Zap, color: 'text-emerald-400', bg: 'bg-emerald-500/10' },
-                  { label: 'Identidade', value: 'Admin', desc: 'Acesso Mestre', icon: Settings2, color: 'text-purple-400', bg: 'bg-purple-500/10' },
-                ].map((stat, i) => (
-                  <div key={i} className="flex flex-col p-6 bg-zinc-900 border border-zinc-800 rounded-3xl">
-                    <div className="flex items-center gap-3 mb-4">
-                       <div className={`p-2.5 rounded-xl ${stat.bg}`}>
-                         <stat.icon className={`w-5 h-5 ${stat.color}`} />
-                       </div>
-                       <span className="text-sm font-medium text-zinc-400">{stat.label}</span>
-                    </div>
-                    <div className="mt-4">
-                      <h3 className="text-4xl font-semibold text-zinc-100 tracking-tight">{stat.value}</h3>
-                      <p className="text-sm text-zinc-500 mt-1">{stat.desc}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-
-              {/* Grid de Especialistas */}
-              <div className="space-y-6">
-                <div className="flex items-center justify-between border-b border-zinc-800 pb-4">
-                   <h2 className="text-lg font-medium text-zinc-200">Painel de Especialistas AURA</h2>
-                </div>
-                
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                  {((dashboardData.specialists && dashboardData.specialists.length > 0) ? dashboardData.specialists : [
-                    { id: 'CODING', name: 'Software Eng.', icon: Zap, instruction: 'Otimização de código e arquitetura avançada.' },
-                    { id: 'FINANCE', name: 'Finance Agent', icon: DollarSign, instruction: 'Modelagem de dados e análise de mercado.' },
-                    { id: 'HEALTH', name: 'Health Advisor', icon: Heart, instruction: 'Protocolos e revisão de literatura científica.' },
-                    { id: 'PERSONAL', name: 'Productivity', icon: Shield, instruction: 'Otimização de agenda e automação.' },
-                  ]).map((s, i) => (
-                     <div key={i} className="flex flex-col p-6 bg-zinc-900 border border-zinc-800 rounded-3xl hover:border-zinc-700 transition-all">
-                      <div className="flex items-center justify-between mb-5">
-                        <div className="p-2.5 bg-zinc-800 rounded-xl text-zinc-300">
-                          {(s.icon) ? <s.icon className="w-5 h-5"/> : <Bot className="w-5 h-5" />}
-                        </div>
-                        <span className="text-[10px] font-bold tracking-wider text-zinc-500 uppercase bg-[#09090b] border border-zinc-800 px-2 py-1 rounded-md">
-                          {s.id}
-                        </span>
-                      </div>
-                      <h3 className="text-[17px] font-medium text-zinc-200 mb-2">{s.name}</h3>
-                      <p className="text-[13px] text-zinc-500 leading-relaxed mb-6 flex-1">
-                        {s.instruction}
-                      </p>
-                      <button className="w-full py-2.5 bg-zinc-800 hover:bg-zinc-700 text-zinc-200 rounded-xl text-sm font-medium transition-colors">
-                        Calibrar
-                      </button>
-                    </div>
-                  ))}
-                </div>
-              </div>
-              
-            </div>
-          </div>
-        )}
+          )}
+        </div>
       </main>
     </div>
   );
