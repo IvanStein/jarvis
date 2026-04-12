@@ -70,128 +70,102 @@ export default function Home() {
   };
 
   return (
-    <div className="flex h-screen bg-[#030303] text-zinc-200 font-sans font-light antialiased overflow-hidden selection:bg-blue-500/30">
+    <div className="flex flex-col h-screen bg-[#09090b] text-zinc-200 font-sans antialiased selection:bg-blue-500/30">
       
-      {/* Background Ambient */}
-      <div className="absolute top-[-20%] left-[-10%] w-[40%] h-[40%] bg-blue-600/10 blur-[120px] rounded-full pointer-events-none"></div>
-
-      {/* Desktop Sidebar */}
-      <aside className="hidden md:flex flex-col w-64 border-r border-white/5 bg-[#050505]/80 backdrop-blur-xl z-20">
-        {/* Logo Area */}
-        <div className="h-20 flex items-center px-6 border-b border-white/5">
-          <div className="flex items-center gap-3">
-            <div className="p-2 bg-gradient-to-tr from-blue-600 to-blue-400 rounded-lg shadow-[0_0_15px_rgba(37,99,235,0.3)]">
-              <Sparkles className="w-5 h-5 text-white" />
-            </div>
-            <span className="font-semibold text-white tracking-wide text-lg">JARVIS</span>
+      {/* 1. HEADER EXIBIÇÃO FIXA NO TOPO */}
+      <header className="flex-none flex items-center justify-between px-6 py-4 bg-[#09090b] border-b border-zinc-800/80 z-20">
+        <div className="flex items-center gap-3">
+          <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-zinc-900 border border-zinc-700">
+            <Sparkles className="w-4 h-4 text-blue-500" />
           </div>
+          <h1 className="text-base font-semibold tracking-wide text-zinc-100 flex items-center gap-2">
+            JARVIS <span className="text-zinc-600 font-normal">/</span> <span className="font-medium">AURA IV</span>
+          </h1>
         </div>
 
-        {/* Navigation */}
-        <nav className="flex-1 px-4 py-6 space-y-2">
-          <p className="px-2 text-xs font-semibold text-zinc-600 uppercase tracking-wider mb-4">Workspace</p>
-          
+        {/* Tab Switcher */}
+        <div className="hidden sm:flex bg-zinc-900 p-1 rounded-xl border border-zinc-800 shadow-inner">
           <button 
             onClick={() => setActiveTab('chat')}
-            className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all ${
+            className={`px-6 py-1.5 rounded-lg text-sm transition-all ${
               activeTab === 'chat' 
-                ? 'bg-blue-500/10 text-blue-400 border border-blue-500/20' 
-                : 'text-zinc-400 hover:text-zinc-100 hover:bg-white/5 border border-transparent'
+                ? 'bg-zinc-800 text-zinc-100 shadow font-medium' 
+                : 'text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800/50'
             }`}
           >
-            <MessageSquare className="w-5 h-5" />
-            <span className="font-medium text-sm">Terminal (Chat)</span>
+            Terminal
           </button>
-          
           <button 
             onClick={() => setActiveTab('dashboard')}
-            className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all ${
+            className={`px-6 py-1.5 rounded-lg text-sm transition-all ${
               activeTab === 'dashboard' 
-                ? 'bg-blue-500/10 text-blue-400 border border-blue-500/20' 
-                : 'text-zinc-400 hover:text-zinc-100 hover:bg-white/5 border border-transparent'
+                ? 'bg-zinc-800 text-zinc-100 shadow font-medium' 
+                : 'text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800/50'
             }`}
           >
-            <LayoutDashboard className="w-5 h-5" />
-            <span className="font-medium text-sm">Comando Central</span>
+            Dashboard
           </button>
-        </nav>
-
-        {/* Bottom Status */}
-        <div className="p-4 border-t border-white/5">
-          <div className="flex items-center gap-3 p-3 rounded-xl bg-white/5 border border-white/10">
-            <div className="relative flex h-2.5 w-2.5">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
-            </div>
-            <div>
-               <p className="text-xs font-semibold text-white">Sistema Online</p>
-               <p className="text-[10px] text-zinc-500">v4.0.0-alpha</p>
-            </div>
-          </div>
         </div>
-      </aside>
 
-      {/* Main Content Area */}
-      <div className="flex-1 flex flex-col relative z-10 w-full">
+        {/* Status */}
+        <div className="flex items-center gap-2">
+          <div className="relative flex h-2 w-2">
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+            <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+          </div>
+          <span className="hidden sm:inline-block text-[11px] font-medium text-zinc-400 uppercase tracking-wider">
+            Online
+          </span>
+        </div>
+      </header>
+
+      {/* Mobile Switcher (abaixo do header em telas pequenas) */}
+      <div className="sm:hidden flex-none p-3 border-b border-zinc-800/80 bg-[#09090b]">
+        <div className="flex bg-zinc-900 w-full p-1 rounded-lg border border-zinc-800">
+           <button 
+            onClick={() => setActiveTab('chat')}
+            className={`flex-1 py-2 text-xs rounded-md transition-all ${
+              activeTab === 'chat' ? 'bg-zinc-800 text-zinc-100 font-medium shadow' : 'text-zinc-400'
+            }`}
+          > Chat </button>
+          <button 
+            onClick={() => setActiveTab('dashboard')}
+            className={`flex-1 py-2 text-xs rounded-md transition-all ${
+              activeTab === 'dashboard' ? 'bg-zinc-800 text-zinc-100 font-medium shadow' : 'text-zinc-400'
+            }`}
+          > Dashboard </button>
+        </div>
+      </div>
+
+      {/* 2. ÁREA DE CONTEÚDO PRINCIPAL (OCUPA RESTO DA TELA) */}
+      <main className="flex-1 min-h-0 relative flex flex-col bg-[#09090b]">
         
-        {/* Mobile Header (Only visible on small screens) */}
-        <header className="md:hidden flex items-center justify-between px-4 h-16 border-b border-white/5 bg-[#050505]/90 backdrop-blur-md z-50">
-          <div className="flex items-center gap-2">
-            <div className="p-1.5 bg-blue-600 rounded-md">
-              <Sparkles className="w-4 h-4 text-white" />
-            </div>
-            <span className="font-semibold text-white">JARVIS</span>
-          </div>
-          <div className="flex gap-2">
-            <button 
-              onClick={() => setActiveTab('chat')}
-              className={`p-2 rounded-lg ${activeTab === 'chat' ? 'bg-white/10 text-white' : 'text-zinc-400'}`}
-            >
-              <MessageSquare className="w-5 h-5" />
-            </button>
-            <button 
-              onClick={() => setActiveTab('dashboard')}
-              className={`p-2 rounded-lg ${activeTab === 'dashboard' ? 'bg-white/10 text-white' : 'text-zinc-400'}`}
-            >
-              <LayoutDashboard className="w-5 h-5" />
-            </button>
-          </div>
-        </header>
-
         {activeTab === 'chat' ? (
           <>
-            {/* Top Bar for Chat */}
-            <div className="hidden md:flex h-20 items-center px-8 border-b border-white/5 shrink-0 bg-[#050505]/30 backdrop-blur-sm">
-              <div>
-                <h1 className="text-xl font-medium text-white">Terminal AURA</h1>
-                <p className="text-sm text-zinc-500">Interaja com os módulos especializados.</p>
-              </div>
-            </div>
-
-            {/* Chat Feed */}
-            <main className="flex-1 overflow-y-auto px-4 md:px-8 py-8 space-y-8 scroll-smooth">
-              <div className="max-w-3xl mx-auto space-y-10 pb-32">
+            {/* 2A. MENSAGENS NO CHAT (SCROLL) */}
+            <div className="flex-1 overflow-y-auto px-4 py-6 md:px-8 md:py-10 scroll-smooth">
+              <div className="max-w-3xl mx-auto space-y-8 pb-4">
                 {messages.map((msg, idx) => (
-                  <div key={idx} className={`flex gap-4 ${msg.role === 'user' ? 'flex-row-reverse' : 'flex-row'} animate-in slide-in-from-bottom-4 duration-500`} style={{animationDelay: `${idx * 20}ms`}}>
+                  <div key={idx} className={`flex gap-4 ${msg.role === 'user' ? 'flex-row-reverse' : 'flex-row'} animate-in fade-in duration-300`}>
                     
-                    {/* AVATAR */}
-                    <div className="shrink-0 mt-1">
+                    {/* Avatar */}
+                    <div className="shrink-0 mt-0.5">
                       {msg.role === 'user' ? (
-                        <div className="w-10 h-10 rounded-full bg-blue-600 text-white flex items-center justify-center shadow-lg shadow-blue-900/20">
-                          <User className="w-5 h-5" />
+                        <div className="w-9 h-9 rounded-full bg-blue-600 text-white flex items-center justify-center shadow-lg shadow-blue-900/20">
+                          <User className="w-4 h-4" />
                         </div>
                       ) : msg.role === 'system' ? (
-                         <div className="w-10 h-10 flex items-center justify-center">
-                          <Loader2 className="w-5 h-5 animate-spin text-zinc-500" />
+                         <div className="w-9 h-9 flex items-center justify-center">
+                          <Loader2 className="w-4 h-4 animate-spin text-zinc-500" />
                         </div>
                       ) : (
-                        <div className="w-10 h-10 rounded-xl bg-zinc-900 border border-white/10 flex items-center justify-center shadow-md text-blue-400">
-                          <Bot className="w-5 h-5" />
+                        <div className="w-9 h-9 rounded-xl bg-zinc-900 border border-zinc-700 flex items-center justify-center shadow-md">
+                          <Bot className="w-5 h-5 text-blue-400" />
                         </div>
                       )}
                     </div>
 
-                    {/* CONTENT */}
+                    {/* Conteúdo */}
                     <div className={`flex flex-col gap-1 max-w-[85%] ${msg.role === 'user' ? 'items-end' : 'items-start'}`}>
                       {/* Name Plate */}
                       {msg.role !== 'system' && (
@@ -200,34 +174,34 @@ export default function Home() {
                             {msg.role === 'user' ? 'Você' : 'AURA IV'}
                           </span>
                           {msg.module && (
-                            <span className="px-2 py-0.5 rounded text-[10px] font-bold tracking-widest text-blue-300 bg-blue-500/10 border border-blue-500/20">
+                            <span className="px-2 py-0.5 rounded text-[10px] font-bold tracking-widest text-[#09090b] bg-blue-400">
                               {msg.module}
                             </span>
                           )}
                         </div>
                       )}
 
-                      {/* Bubble */}
-                      <div className={`text-[15px] leading-relaxed shadow-sm ${
-                        msg.role === 'user' ? 'bg-zinc-800/80 text-white px-5 py-3.5 rounded-2xl rounded-tr-sm border border-white/5' : 
-                        msg.role === 'error' ? 'bg-red-500/10 border border-red-500/20 text-red-300 px-5 py-3.5 rounded-2xl' :
-                        msg.role === 'system' ? 'text-zinc-500 italic text-sm' : 
-                        'bg-transparent text-zinc-300 py-2' // AI response is flat for readability
+                      {/* Balão / Texto */}
+                      <div className={`text-[15px] leading-relaxed ${
+                        msg.role === 'user' ? 'bg-zinc-800 text-zinc-100 px-5 py-3 rounded-2xl rounded-tr-sm border border-zinc-700' : 
+                        msg.role === 'error' ? 'bg-red-950/50 border border-red-900/50 text-red-300 px-5 py-3 rounded-2xl' :
+                        msg.role === 'system' ? 'text-zinc-500 italic text-sm py-1' : 
+                        'text-zinc-300 py-2' // IA tem fundo invisível para ler melhor
                       }`}>
                         {msg.text}
                       </div>
                     </div>
-
                   </div>
                 ))}
 
+                {/* Loading State */}
                 {isLoading && (
                   <div className="flex gap-4 animate-in fade-in duration-300">
-                    <div className="w-10 h-10 rounded-xl bg-zinc-900 border border-white/10 flex items-center justify-center shrink-0">
-                      <Bot className="w-5 h-5 text-zinc-500 animate-pulse" />
+                    <div className="w-9 h-9 rounded-xl bg-zinc-900 border border-zinc-700 flex items-center justify-center shrink-0">
+                      <Bot className="w-5 h-5 text-zinc-600 animate-pulse" />
                     </div>
                     <div className="flex flex-col justify-center gap-1.5">
-                       <span className="text-xs font-semibold text-zinc-500">AURA IV COMPUTING</span>
+                       <span className="text-xs font-semibold text-zinc-500">PROCESSANDO...</span>
                        <div className="flex items-center gap-1 mt-1">
                           <div className="w-1.5 h-1.5 bg-blue-500 rounded-full animate-bounce"></div>
                           <div className="w-1.5 h-1.5 bg-blue-500 rounded-full animate-bounce" style={{animationDelay: '150ms'}}></div>
@@ -237,16 +211,17 @@ export default function Home() {
                   </div>
                 )}
               </div>
-            </main>
+            </div>
 
-            {/* Input Bar */}
-            <div className="absolute bottom-0 w-full bg-gradient-to-t from-[#030303] via-[#030303]/90 to-transparent pt-10 pb-6 px-4 md:px-8">
+            {/* 2B. INPUT FIXO NO RODAPÉ DO CHAT */}
+            <div className="flex-none p-4 md:px-8 border-t border-zinc-800 bg-[#09090b]">
               <div className="max-w-3xl mx-auto">
-                <div className="relative flex items-center bg-zinc-900 border border-white/10 rounded-2xl shadow-xl hover:border-white/20 focus-within:border-blue-500/50 focus-within:ring-1 focus-within:ring-blue-500/50 transition-all">
+                <div className="relative flex items-center bg-zinc-900 border border-zinc-700 rounded-2xl shadow-xl focus-within:border-blue-500/50 focus-within:ring-1 focus-within:ring-blue-500/50 transition-all">
                   
                   <button 
                     onClick={() => fileInputRef.current.click()}
-                    className="p-4 text-zinc-400 hover:text-white transition-colors"
+                    className="p-4 text-zinc-400 hover:text-zinc-100 transition-colors rounded-l-2xl"
+                    title="Anexar Arquivo RAG"
                   >
                     <Paperclip className="w-5 h-5" />
                   </button>
@@ -257,83 +232,88 @@ export default function Home() {
                     value={input}
                     onChange={(e) => setInput(e.target.value)}
                     onKeyDown={(e) => e.key === 'Enter' && sendMessage()}
-                    placeholder={isLearning ? "Indexando documento..." : "Envie uma mensagem..."}
-                    className="flex-1 py-4 px-2 bg-transparent text-white placeholder:text-zinc-500 focus:outline-none text-[15px]"
+                    placeholder={isLearning ? "Indexando base neural..." : "Envie instrução para Jarvis..."}
+                    className="flex-1 py-4 px-1 bg-transparent text-zinc-100 placeholder:text-zinc-500 focus:outline-none text-[15px] font-medium"
                   />
                   
-                  <div className="p-2">
+                  <div className="p-2 pl-1">
                     <button
                       onClick={sendMessage}
                       disabled={!input.trim() || isLoading}
-                      className="p-3 bg-white text-black hover:bg-zinc-200 disabled:bg-white/5 disabled:text-zinc-600 rounded-xl transition-all shadow-sm"
+                      className="p-2.5 bg-zinc-100 text-[#09090b] hover:bg-white disabled:bg-zinc-800 disabled:text-zinc-600 rounded-xl transition-all font-semibold shadow-sm flex items-center justify-center"
                     >
                       <Send className="w-4 h-4 ml-0.5" />
                     </button>
                   </div>
                 </div>
+                
+                <div className="text-center mt-3">
+                   <p className="text-[11px] text-zinc-500">AURA pode cometer erros ao interagir com múltiplas APIs. Verifique.</p>
+                </div>
               </div>
             </div>
           </>
         ) : (
-          /* Dashboard Moderno */
-          <main className="flex-1 overflow-y-auto w-full z-10 px-4 md:px-8 py-8 md:py-12">
-            <div className="max-w-6xl mx-auto space-y-10">
+          
+          /* 3. DASHBOARD (SCROLL SEPARADO) */
+          <div className="flex-1 overflow-y-auto p-6 md:p-10">
+            <div className="max-w-5xl mx-auto space-y-10 pb-10">
               
               <div>
-                 <h2 className="text-3xl tracking-tight font-semibold text-white">Comando Central</h2>
-                 <p className="text-zinc-400 mt-2">Visão geral do sistema e configuração de agentes.</p>
+                 <h2 className="text-3xl font-semibold text-zinc-100 tracking-tight">Comando Central</h2>
+                 <p className="text-zinc-400 mt-2">Visão geral do sistema e telemetria de agentes RAG.</p>
               </div>
 
-              {/* Stats - Bento Grid */}
+              {/* Grid de Estatísticas Fixo e Seguro */}
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 {[
-                  { label: 'Cérebro Digital', value: dashboardData.totalKnowledge, desc: 'Fragmentos indexados', icon: Database, color: 'text-blue-400', bg: 'bg-blue-500/10', border: 'border-blue-500/20' },
-                  { label: 'Status da Rede', value: '100%', desc: 'Sistemas operacionais', icon: Zap, color: 'text-emerald-400', bg: 'bg-emerald-500/10', border: 'border-emerald-500/20' },
-                  { label: 'Identidade', value: 'Admin', desc: 'Sessão autorizada', icon: Settings2, color: 'text-purple-400', bg: 'bg-purple-500/10', border: 'border-purple-500/20' },
+                  { label: 'Cérebro Digital', value: dashboardData.totalKnowledge, desc: 'Fragmentos indexados', icon: Database, color: 'text-blue-400', bg: 'bg-blue-500/10' },
+                  { label: 'Status da Rede', value: '100%', desc: 'Sistemas operacionais', icon: Zap, color: 'text-emerald-400', bg: 'bg-emerald-500/10' },
+                  { label: 'Identidade', value: 'Admin', desc: 'Acesso Mestre', icon: Settings2, color: 'text-purple-400', bg: 'bg-purple-500/10' },
                 ].map((stat, i) => (
-                  <div key={i} className="flex flex-col p-6 bg-zinc-900/50 border border-white/5 rounded-3xl backdrop-blur-sm">
-                    <div className="flex items-center gap-4 mb-4">
-                       <div className={`p-3 rounded-2xl ${stat.bg} ${stat.border} border`}>
-                         <stat.icon className={`w-6 h-6 ${stat.color}`} />
+                  <div key={i} className="flex flex-col p-6 bg-zinc-900 border border-zinc-800 rounded-3xl">
+                    <div className="flex items-center gap-3 mb-4">
+                       <div className={`p-2.5 rounded-xl ${stat.bg}`}>
+                         <stat.icon className={`w-5 h-5 ${stat.color}`} />
                        </div>
-                       <span className="text-sm font-medium text-zinc-300">{stat.label}</span>
+                       <span className="text-sm font-medium text-zinc-400">{stat.label}</span>
                     </div>
-                    <div className="mt-auto">
-                      <h3 className="text-4xl font-semibold text-white tracking-tight">{stat.value}</h3>
-                      <p className="text-sm text-zinc-500 mt-2">{stat.desc}</p>
+                    <div className="mt-4">
+                      <h3 className="text-4xl font-semibold text-zinc-100 tracking-tight">{stat.value}</h3>
+                      <p className="text-sm text-zinc-500 mt-1">{stat.desc}</p>
                     </div>
                   </div>
                 ))}
               </div>
 
-              {/* Specialists - Cards */}
+              {/* Grid de Especialistas */}
               <div className="space-y-6">
-                <div className="flex items-center justify-between">
-                   <h2 className="text-xl font-medium text-white">Painel de Especialistas</h2>
+                <div className="flex items-center justify-between border-b border-zinc-800 pb-4">
+                   <h2 className="text-lg font-medium text-zinc-200">Painel de Especialistas AURA</h2>
                 </div>
                 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                   {((dashboardData.specialists && dashboardData.specialists.length > 0) ? dashboardData.specialists : [
-                    { id: 'CODING', name: 'Software Engineer', icon: Zap, instruction: 'Otimização de código e arquitetura de sistemas avançados.' },
-                    { id: 'FINANCE', name: 'Financial Analyst', icon: DollarSign, instruction: 'Análise de dados e projeções financeiras.' },
-                    { id: 'HEALTH', name: 'Health Advisor', icon: Heart, instruction: 'Protocolos de saúde e bem-estar (experimental).' },
-                    { id: 'PERSONAL', name: 'Personal Assistant', icon: Shield, instruction: 'Gestão de agenda e produtividade 10x.' },
+                    { id: 'CODING', name: 'Software Eng.', icon: Zap, instruction: 'Otimização de código e arquitetura avançada.' },
+                    { id: 'FINANCE', name: 'Finance Agent', icon: DollarSign, instruction: 'Modelagem de dados e análise de mercado.' },
+                    { id: 'HEALTH', name: 'Health Advisor', icon: Heart, instruction: 'Protocolos e revisão de literatura científica.' },
+                    { id: 'PERSONAL', name: 'Productivity', icon: Shield, instruction: 'Otimização de agenda e automação.' },
                   ]).map((s, i) => (
-                     <div key={i} className="flex flex-col p-6 bg-zinc-900 border border-white/5 rounded-3xl hover:border-white/10 hover:bg-zinc-800 transition-all group">
-                      <div className="flex items-center justify-between mb-6">
-                        <div className="p-3 bg-white/5 rounded-xl text-zinc-400 group-hover:text-blue-400 group-hover:bg-blue-500/10 transition-colors">
-                          {(s.icon) ? <s.icon className="w-6 h-6"/> : <Bot className="w-6 h-6" />}
+                     <div key={i} className="flex flex-col p-6 bg-zinc-900 border border-zinc-800 rounded-3xl hover:border-zinc-700 transition-all">
+                      <div className="flex items-center justify-between mb-5">
+                        <div className="p-2.5 bg-zinc-800 rounded-xl text-zinc-300">
+                          {(s.icon) ? <s.icon className="w-5 h-5"/> : <Bot className="w-5 h-5" />}
                         </div>
-                        <span className="text-[10px] font-bold tracking-wider text-zinc-600 uppercase border border-white/5 px-2 py-1 rounded bg-black/50">
+                        <span className="text-[10px] font-bold tracking-wider text-zinc-500 uppercase bg-[#09090b] border border-zinc-800 px-2 py-1 rounded-md">
                           {s.id}
                         </span>
                       </div>
-                      <h3 className="text-lg font-medium text-zinc-100 mb-2">{s.name}</h3>
-                      <p className="text-sm text-zinc-500 leading-relaxed line-clamp-3 mb-6 flex-1">
+                      <h3 className="text-[17px] font-medium text-zinc-200 mb-2">{s.name}</h3>
+                      <p className="text-[13px] text-zinc-500 leading-relaxed mb-6 flex-1">
                         {s.instruction}
                       </p>
-                      <button className="w-full py-2.5 bg-white/5 hover:bg-white text-zinc-300 hover:text-black rounded-lg text-sm font-medium transition-colors">
-                        Sintonizar
+                      <button className="w-full py-2.5 bg-zinc-800 hover:bg-zinc-700 text-zinc-200 rounded-xl text-sm font-medium transition-colors">
+                        Calibrar
                       </button>
                     </div>
                   ))}
@@ -341,9 +321,9 @@ export default function Home() {
               </div>
               
             </div>
-          </main>
+          </div>
         )}
-      </div>
+      </main>
     </div>
   );
 }
