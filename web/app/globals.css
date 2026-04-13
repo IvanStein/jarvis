@@ -1,28 +1,15 @@
 @import "tailwindcss";
 
 :root {
-  /* Kinetic Cyber-Minimalism Palette */
-  --background: #0e0e0e;
-  --foreground: #ededed;
-  
-  /* Primary Signal */
-  --primary: #8eff71;
-  --primary-container: #2ff801;
-  --primary-dim: rgba(142, 255, 113, 0.4);
-  --on-primary: #0d6100;
-  
-  /* Surface Hierarchy */
-  --surface: #0e0e0e;
-  --surface-container-low: #131313;
-  --surface-container: #1a1a1a;
-  --surface-container-highest: #262626;
-  --surface-bright: #2c2c2c;
-  
-  /* Variants & Accents */
-  --on-surface-variant: #adaaaa;
-  --outline-variant: rgba(72, 72, 71, 0.15);
-  --secondary: #90f9a3;
-  --secondary-container: rgba(144, 249, 163, 0.1);
+  --background: #171717;
+  --foreground: #ffffff;
+  --chatgpt-green: #10A37F;
+  --chatgpt-purple: #5436DA;
+  --surface: #202020;
+  --surface-hover: #2A2A2A;
+  --surface-active: #2F2F2F;
+  --border: #3F3F3F;
+  --muted: #8E8E8E;
 }
 
 * {
@@ -31,70 +18,31 @@
   margin: 0;
 }
 
-html,
-body {
-  max-width: 100vw;
-  overflow-x: hidden;
+html, body {
   height: 100%;
   background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-inter), sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
 }
 
-h1, h2, h3, h4, .display-font {
-  font-family: var(--font-space-grotesk), sans-serif;
+::-webkit-scrollbar {
+  width: 8px;
 }
 
-/* Signature Components & Utilities */
-
-.liquid-light {
-  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-container) 100%);
+::-webkit-scrollbar-track {
+  background: transparent;
 }
 
-.ghost-border {
-  outline: 1px solid var(--outline-variant);
+::-webkit-scrollbar-thumb {
+  background: #424242;
+  border-radius: 4px;
 }
 
-.glass-overlay {
-  background: rgba(44, 44, 44, 0.6);
-  backdrop-filter: blur(20px);
+::-webkit-scrollbar-thumb:hover {
+  background: #525252;
 }
 
-.kinetic-progress-track {
-  height: 0.5rem;
-  background: var(--surface-container-highest);
-  border-radius: 0.125rem;
-  overflow: hidden;
-}
-
-.kinetic-progress-fill {
-  height: 100%;
-  background: var(--primary);
-  box-shadow: 0 0 12px var(--primary-dim);
-  position: relative;
-}
-
-.kinetic-progress-fill::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-  animation: shimmer 2s infinite;
-}
-
-@keyframes shimmer {
-  100% {
-    left: 100%;
-  }
-}
-
-/* Custom Selection */
 ::selection {
-  background: var(--primary);
-  color: var(--on-primary);
+  background: rgba(16, 163, 127, 0.3);
 }
