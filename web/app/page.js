@@ -5,7 +5,7 @@ import {
   MessageSquare, Plus, ChevronDown, Copy, Check, 
   Menu, X, Zap, Database, Heart, Stethoscope, Brain, Settings2, Save, 
   LayoutDashboard, Activity, BookOpen, FileText, Footprints, Youtube, Share2,
-  Code, Calculator, Calendar, Music, PenTool, Upload, File
+  Code, Calculator, Calendar, PenTool, Upload, File
 } from 'lucide-react';
 
 const MODELS = [
@@ -50,9 +50,6 @@ export default function Home() {
   const [isUploading, setIsUploading] = useState(false);
   const [newSpecialist, setNewSpecialist] = useState({ name: '', description: '', instruction: '' });
   const fileInputRef = useRef(null);
-  const messagesEndRef = useRef(null);
-  const textareaRef = useRef(null);
-  
   const messagesEndRef = useRef(null);
   const textareaRef = useRef(null);
 
