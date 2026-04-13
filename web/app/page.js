@@ -80,12 +80,35 @@ export default function Home() {
   const messages = activeConversation?.messages || [];
 
   useEffect(() => {
+    fetchHistory();
     if (activeTab === 'dashboard') {
       fetchDashboard();
     }
   }, [activeTab]);
 
-  // messages now derived directly
+  const fetchHistory = async () => {
+    try {
+      const res = await fetch('/api/history?userId=ivan_stein');
+      if (res.ok) {
+        const messages = await res.json();
+        if (messages.length > 0) {
+          // No momento as mensagens estão em lista única, vamos agrupar na conversa default
+          setConversations(prev => [{
+            ...prev[0],
+            messages: messages.map(m => ({
+              id: Math.random().toString(),
+              role: m.role,
+              content: m.content,
+              timestamp: Date.now(),
+              module: m.role === 'assistant' ? 'Histórico' : null
+            }))
+          }]);
+        }
+      }
+    } catch (error) {
+      console.error('Erro ao carregar histórico:', error);
+    }
+  };
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });

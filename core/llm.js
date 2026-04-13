@@ -4,20 +4,18 @@ import { z } from "zod";
 
 let genAI;
 
-function getModelInstance(customInstruction = null) {
+export function getModelInstance(customInstruction = null) {
     const apiKey = process.env.GEMINI_API_KEY?.trim()?.replace(/^["']|["']$/g, '');
     
     if (!apiKey) {
-        const error = new Error("Configuração da API Gemini pendente.");
-        error.debugContext = { keyFound: false, envKeys: Object.keys(process.env).filter(k => k.includes('GEMINI')) };
-        throw error;
+        throw new Error("Configuração da API Gemini pendente.");
     }
 
     if (!genAI) genAI = new GoogleGenerativeAI(apiKey);
 
     const baseInstruction = `Você é AURA, um sistema inteligente com personalidade JARVIS.
 FOCO ATUAL: ${customInstruction || "Gestão Geral e Auxílio ao Ivan Stein"}.
-REGRAS: Seja conciso, técnico e sofisticado. Use o histórico e contexto aprendido para economizar tokens.`;
+REGRAS: Seja conciso, técnico e sofisticado.`;
 
     return genAI.getGenerativeModel({ 
         model: "gemini-1.5-flash",
@@ -26,9 +24,9 @@ REGRAS: Seja conciso, técnico e sofisticado. Use o histórico e contexto aprend
 }
 
 /**
- * Chama o Gemini com suporte a especialistas.
+ * Chama o Gemini com suporte a especialistas e arquivos.
  */
-export async function callGemini(prompt, history = [], specialistInstruction = null) {
+export async function callGemini(prompt, history = [], specialistInstruction = null, fileData = null) {
     const activeModel = getModelInstance(specialistInstruction);
 
     try {
@@ -38,12 +36,22 @@ export async function callGemini(prompt, history = [], specialistInstruction = n
             parts: [{ text: msg.content }],
         }));
 
+        if (fileData) {
+            // Se houver arquivo, não usamos chat history simples, usamos generateContent direto
+            const content = [
+                { fileData: { mimeType: fileData.mimeType, fileUri: fileData.fileUri } },
+                { text: validatedPrompt }
+            ];
+            const result = await activeModel.generateContent(content);
+            return result.response.text();
+        }
+
         const chat = activeModel.startChat({ history: chatHistory });
         const result = await chat.sendMessage(validatedPrompt);
         const response = await result.response;
         return response.text();
     } catch (error) {
-        console.error("Erro no Gemini:", error.message, error.stack);
+        console.error("Erro no Gemini:", error.message);
         throw new Error(`Erro na AURA: ${error.message}`);
     }
 }

@@ -3,6 +3,7 @@ import { callGemini } from './llm.js';
 import { saveMessage, getLastMessages, getUserFacts, getSpecialistConfig, updateSpecialistConfig } from '../memory/memory.js';
 import { SPECIALISTS, routeToSpecialist } from './specialists.js';
 import { learnFromYouTube } from '../rag/ingest.js';
+import { transcribeAdvanced } from '../rag/transcribe.js';
 
 export async function runAgent(userInput, userId) {
     console.log(`[ORQUESTRADOR] Analisando requisição...`);
@@ -18,12 +19,12 @@ export async function runAgent(userInput, userId) {
         }
     }
 
-    // 2. Detecção de APRENDIZAGEM (YouTube)
+    // 2. Detecção de APRENDIZAGEM e TRANSCRIÇÃO (YouTube)
     if (userInput.toLowerCase().includes('youtube.com') || userInput.toLowerCase().includes('youtu.be')) {
         const urlMatch = userInput.match(/(https?:\/\/[^\s]+)/);
         if (urlMatch) {
-            const result = await learnFromYouTube(urlMatch[0]);
-            return { response: result.response, module: "RAG" };
+            const result = await transcribeAdvanced(urlMatch[0], userId);
+            return { response: result, module: "Transcrição" };
         }
     }
 
