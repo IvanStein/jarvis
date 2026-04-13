@@ -4,7 +4,7 @@ import {
   Send, Sparkles, User, Bot, Loader2, 
   MessageSquare, Plus, ChevronDown, Copy, Check, 
   Menu, X, Zap, Database, Heart, Stethoscope, Brain, Settings2, Save, 
-  LayoutDashboard, Activity, BookOpen, FileText, Footprints, Youtube, Share2,
+  LayoutDashboard, Activity, BookOpen, FileText, Footprints, PlaySquare, Share2,
   Code, Calculator, Calendar, PenTool, Upload, File
 } from 'lucide-react';
 
@@ -20,7 +20,7 @@ const SPECIALIST_TEMPLATES = [
   { id: 'BOOKS', name: 'Bibliotecário', description: 'Análise e resumo de livros.', icon: BookOpen, instruction: 'Você é o Bibliotecário, especialista em análise de livros. Resume obras, identifica temas principais, personagens e filosofias. Seja analítico e profundidade.' },
   { id: 'ACADEMIC', name: 'Academia', description: 'Leitura e análise de artigos científicos.', icon: FileText, instruction: 'Você é Academia, especialista em papers científicos. Analise metodologias, resultados, conclusões. Traduza linguagem técnica para compreensão clara.' },
   { id: 'RUNNING', name: 'Corredor', description: 'Auxiliar para corrida de rua - treinos, nutrição, recuperação.', icon: Footprints, instruction: 'Você é o Corredor, especialista em corrida de rua. Ajude com planos de treino, nutrição para corredores, prevenção de lesões e recuperação.' },
-  { id: 'YOUTUBE', name: 'YouTube', description: 'Transcreve e resume vídeos do YouTube.', icon: Youtube, instruction: 'Você é o módulo YouTube. Quando receber um link, extraia a transcrição e resuma os pontos principais. Formate de forma clara.' },
+  { id: 'YOUTUBE', name: 'YouTube', description: 'Transcreve e resume vídeos do YouTube.', icon: PlaySquare, instruction: 'Você é o módulo YouTube. Quando receber um link, extraia a transcrição e resuma os pontos principais. Formate de forma clara.' },
   { id: 'SOCIAL', name: 'Social', description: 'Cria notícias e posts para redes sociais.', icon: Share2, instruction: 'Você é Social, especialista em conteúdo para redes sociais. Crie posts atrativos, notícias engajantes. Formate com emojis adequado, CTAs e tags relevantes.' },
 ];
 
@@ -304,7 +304,7 @@ export default function Home() {
       'BOOKS': BookOpen,
       'ACADEMIC': FileText,
       'RUNNING': Footprints,
-      'YOUTUBE': Youtube,
+      'YOUTUBE': PlaySquare,
       'SOCIAL': Share2,
       'JARVIS': Sparkles,
     };
