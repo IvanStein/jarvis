@@ -5,7 +5,10 @@ import { getSupabase } from '../config/supabase.js';
  */
 export async function saveMessage(userId, role, content, conversationId = 'default') {
     const supabase = getSupabase();
-    if (!supabase) return;
+    if (!supabase) {
+        console.error("Tentativa de salvar sem Supabase configurado.");
+        return { error: 'Supabase não configurado' };
+    }
 
     try {
         const { error } = await supabase
@@ -18,8 +21,10 @@ export async function saveMessage(userId, role, content, conversationId = 'defau
             }]);
 
         if (error) throw error;
+        return { success: true };
     } catch (error) {
         console.error("Erro ao salvar mensagem no Supabase:", error);
+        return { error: error.message };
     }
 }
 
