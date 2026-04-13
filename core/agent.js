@@ -1,12 +1,16 @@
-// core/agent.js
 import { callGemini } from './llm.js';
 import { saveMessage, getLastMessages, getUserFacts, getSpecialistConfig, updateSpecialistConfig } from '../memory/memory.js';
 import { SPECIALISTS, routeToSpecialist } from './specialists.js';
 import { learnFromYouTube } from '../rag/ingest.js';
-import { transcribeAdvanced } from '../rag/transcribe.js';
 
 export async function runAgent(userInput, userId) {
     console.log(`[ORQUESTRADOR] Analisando requisição...`);
+    
+    // Import dinâmico para evitar quebra de inicialização se a lib de áudio falhar
+    const { transcribeAdvanced } = await import('../rag/transcribe.js').catch(err => {
+        console.error('Erro ao carregar módulo de transcrição:', err.message);
+        return { transcribeAdvanced: null };
+    });
 
     // 1. Comando de TREINAMENTO de Especialista
     if (userInput.startsWith('/treinar')) {
@@ -23,6 +27,9 @@ export async function runAgent(userInput, userId) {
     if (userInput.toLowerCase().includes('youtube.com') || userInput.toLowerCase().includes('youtu.be')) {
         const urlMatch = userInput.match(/(https?:\/\/[^\s]+)/);
         if (urlMatch) {
+            if (!transcribeAdvanced) {
+                return { response: "⚠️ Módulo de áudio não carregado. Tentando fallback para legendas...", module: "Sistema" };
+            }
             const result = await transcribeAdvanced(urlMatch[0], userId);
             return { response: result, module: "Transcrição" };
         }
