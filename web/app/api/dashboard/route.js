@@ -4,6 +4,7 @@ import { getSupabase } from '../../../../config/supabase.js';
 export async function GET() {
     try {
         const supabase = getSupabase();
+        if (!supabase) throw new Error("Supabase não configurado. Adicione as variáveis de ambiente SUPABASE_URL e SUPABASE_ANON_KEY.");
         
         const { data: configs, error } = await supabase.from('specialists_config').select('*');
         
@@ -33,6 +34,7 @@ export async function POST(request) {
     try {
         const { specialistId, instruction } = await request.json();
         const supabase = getSupabase();
+        if (!supabase) throw new Error("Supabase não configurado. Adicione as variáveis de ambiente SUPABASE_URL e SUPABASE_ANON_KEY.");
         
         const { data, error } = await supabase.from('specialists_config')
             .upsert({ 
