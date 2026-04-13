@@ -101,8 +101,13 @@ export default function Home() {
   const fetchDashboard = async () => {
     try {
       const res = await fetch('/api/dashboard');
-      const data = await res.json();
-      setDashboardData(data);
+      if (res.ok) {
+        const data = await res.json();
+        setDashboardData(data);
+      } else {
+        console.error('Falha ao carregar dashboard:', res.status);
+        setDashboardData({ specialists: [], totalKnowledge: 0, systemStatus: 'offline' });
+      }
     } catch (error) {
       console.error('Erro ao carregar dashboard:', error);
       setDashboardData({ specialists: [], totalKnowledge: 0, systemStatus: 'error' });
@@ -135,19 +140,26 @@ export default function Home() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ message: text, userId: 'ivan_stein' }),
       });
-      const data = await response.json();
       
-      if (!response.ok) {
-        throw new Error(data.error || 'Erro na resposta');
+      const contentType = response.headers.get('content-type');
+      if (contentType && contentType.includes('application/json')) {
+        const data = await response.json();
+        if (!response.ok) {
+          throw new Error(data.error || `Erro ${response.status}: Falha na API`);
+        }
+        
+        addMessageToActive(currentConvId, { 
+          id: (Date.now() + 1).toString(),
+          role: 'assistant', 
+          content: data.response, 
+          module: data.module || activeSpecialist?.id || 'JARVIS',
+          timestamp: Date.now()
+        });
+      } else {
+        const errorText = await response.text();
+        console.error('Resposta não-JSON recebida:', errorText.substring(0, 200));
+        throw new Error(`Erro ${response.status}: O servidor retornou HTML em vez de JSON. Verifique se as rotas da API estão operacionais.`);
       }
-      
-      addMessageToActive(currentConvId, { 
-        id: (Date.now() + 1).toString(),
-        role: 'assistant', 
-        content: data.response, 
-        module: data.module || activeSpecialist?.id || 'JARVIS',
-        timestamp: Date.now()
-      });
     } catch (error) {
       console.error('Erro ao enviar mensagem:', error);
       addMessageToActive(currentConvId, { 

@@ -33,8 +33,11 @@ export async function getLastMessages(userId, limit = 10) {
             .order('created_at', { ascending: false })
             .limit(limit);
 
-        if (error) throw error;
-        return data.reverse();
+        if (error) {
+            console.warn("[Supabase] Erro ao buscar histórico:", error.message);
+            return [];
+        }
+        return (data || []).reverse();
     } catch (error) {
         console.error("Erro ao buscar histórico no Supabase:", error);
         return [];
@@ -82,6 +85,7 @@ export async function getUserFacts(userId) {
  * Busca a configuração de um especialista no banco.
  */
 export async function getSpecialistConfig(id) {
+    if (!id) return null;
     const supabase = getSupabase();
     if (!supabase) return null;
 
@@ -90,9 +94,12 @@ export async function getSpecialistConfig(id) {
             .from('specialists_config')
             .select('*')
             .eq('id', id)
-            .single();
+            .maybeSingle(); // Usar maybeSingle para evitar erro se não existir
 
-        if (error && error.code !== 'PGRST116') throw error;
+        if (error) {
+            console.warn(`[Supabase] Erro ao buscar especialista ${id}:`, error.message);
+            return null;
+        }
         return data;
     } catch (error) {
         console.error("Erro ao buscar config do especialista:", error);

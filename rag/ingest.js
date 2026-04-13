@@ -36,10 +36,15 @@ export async function ingestKnowledge(text, metadata = {}) {
 export async function learnFromYouTube(url) {
     try {
         const YT = await import('youtube-transcript-api');
-        const YoutubeTranscript = YT.default || (YT.YoutubeTranscript) || YT;
+        const TranscriptClient = YT.default || YT;
+        const client = new TranscriptClient();
+        await client.ready;
+
         const videoId = url.split('v=')[1]?.split('&')[0] || url.split('/').pop();
-        const transcriptItems = await YoutubeTranscript.fetchTranscript(videoId, { lang: 'pt' });
-        const fullText = transcriptItems.map(i => i.text).join(' ');
+        const transcriptData = await client.getTranscript(videoId);
+        
+        // A biblioteca v3.0.6 retorna um objeto que pode conter o campo 'transcript' ou ser o texto direto
+        const fullText = typeof transcriptData === 'string' ? transcriptData : (transcriptData.transcript || transcriptData.text || JSON.stringify(transcriptData));
 
         const result = await ingestKnowledge(fullText, {
             title: `Vídeo YouTube: ${videoId}`,

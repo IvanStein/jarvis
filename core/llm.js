@@ -20,7 +20,7 @@ FOCO ATUAL: ${customInstruction || "Gestão Geral e Auxílio ao Ivan Stein"}.
 REGRAS: Seja conciso, técnico e sofisticado. Use o histórico e contexto aprendido para economizar tokens.`;
 
     return genAI.getGenerativeModel({ 
-        model: "gemini-2.5-flash-lite",
+        model: "gemini-1.5-flash",
         systemInstruction: baseInstruction
     });
 }
