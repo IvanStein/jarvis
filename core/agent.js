@@ -28,7 +28,9 @@ export async function runAgent(userInput, userId) {
         const urlMatch = userInput.match(/(https?:\/\/[^\s]+)/);
         if (urlMatch) {
             if (!transcribeAdvanced) {
-                return { response: "⚠️ Módulo de áudio não carregado. Tentando fallback para legendas...", module: "Sistema" };
+                console.log('[AGENT] Usando fallback de legendas...');
+                const result = await learnFromYouTube(urlMatch[0]);
+                return { response: `⚠️ **Aviso**: Módulo de áudio indisponível. Extraindo legendas como alternativa...\n\n${result.response}`, module: "RAG" };
             }
             const result = await transcribeAdvanced(urlMatch[0], userId);
             return { response: result, module: "Transcrição" };

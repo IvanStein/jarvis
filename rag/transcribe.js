@@ -5,17 +5,15 @@ import ytdl from '@distube/ytdl-core';
 import { GoogleAIFileManager } from "@google/generative-ai/server";
 import { callGemini } from '../core/llm.js';
 
-const TmpPath = path.join(process.cwd(), 'tmp');
-
-// Garantir que a pasta tmp existe
-if (!fs.existsSync(TmpPath)) {
-    fs.mkdirSync(TmpPath, { recursive: true });
-}
-
 /**
  * Baixa o áudio de um vídeo, transcreve usando Gemini e gera insights.
  */
 export async function transcribeAdvanced(url, userId) {
+    const TmpPath = path.join(process.cwd(), 'tmp');
+    if (!fs.existsSync(TmpPath)) {
+        fs.mkdirSync(TmpPath, { recursive: true });
+    }
+    
     const videoId = url.split('v=')[1]?.split('&')[0] || Date.now().toString();
     const filePath = path.join(TmpPath, `${videoId}.mp3`);
 
