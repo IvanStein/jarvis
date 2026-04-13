@@ -110,8 +110,7 @@ export default function Home() {
   };
 
   const sendMessage = async (overrideText = null) => {
-    const isEvent = overrideText && typeof overrideText === 'object' && ('nativeEvent' in overrideText || 'currentTarget' in overrideText);
-    const text = (overrideText && !isEvent) ? overrideText : input;
+    const text = (typeof overrideText === 'string') ? overrideText : input;
     const currentConvId = activeConversationId;
     if (!currentConvId || !text.trim() || isLoading) return;
 
