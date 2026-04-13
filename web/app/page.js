@@ -168,6 +168,61 @@ export default function Home() {
     setSidebarOpen(false);
   };
 
+  const handleFileUpload = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    
+    if (!file.name.toLowerCase().endsWith('.pdf')) {
+      alert('Apenas arquivos PDF são suportados');
+      return;
+    }
+
+    setIsUploading(true);
+    setMessages(prev => [...prev, {
+      id: Date.now().toString(),
+      role: 'system',
+      content: `📚 Processando "${file.name}"...`,
+      timestamp: Date.now()
+    }]);
+
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+
+      const response = await fetch('/api/upload', {
+        method: 'POST',
+        body: formData
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Erro ao processar PDF');
+      }
+
+      setMessages(prev => [...prev, {
+        id: (Date.now() + 1).toString(),
+        role: 'assistant',
+        content: data.response || 'Arquivo processado com sucesso!',
+        module: 'RAG',
+        timestamp: Date.now()
+      }]);
+    } catch (error) {
+      console.error('Erro no upload:', error);
+      setMessages(prev => [...prev, {
+        id: (Date.now() + 1).toString(),
+        role: 'error',
+        content: error.message || 'Erro ao processar arquivo',
+        timestamp: Date.now()
+      }]);
+    } finally {
+      setIsUploading(false);
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+      }
+    }
+  };
+
   const handleCopyMessage = (msgId, content) => {
     navigator.clipboard.writeText(content);
     setCopiedMessageId(msgId);
@@ -180,6 +235,8 @@ export default function Home() {
       sendMessage();
     }
   };
+
+  const handleEditSpecialist = (specialist) => {
     setEditingSpecialist(specialist);
     setSpecialistInstruction(specialist.instruction);
   };
