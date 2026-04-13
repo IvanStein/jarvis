@@ -100,13 +100,18 @@ export default function Home() {
     }
   };
 
-  const sendMessage = async () => {
-    if (!input.trim() || isLoading) return;
+  const sendMessage = async (overrideText = null) => {
+    const text = overrideText || input;
+    if (!text.trim() || isLoading) return;
+
+    // Detectar links YouTube na mensagem
+    const youtubeRegex = /(youtube\.com|youtu\.be)[^\s]*/gi;
+    const hasYoutubeLink = youtubeRegex.test(text);
 
     const userMessage = {
       id: Date.now().toString(),
       role: 'user',
-      content: input,
+      content: text,
       timestamp: Date.now()
     };
 
@@ -118,7 +123,7 @@ export default function Home() {
       const response = await fetch('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: input, userId: 'ivan_stein' }),
+        body: JSON.stringify({ message: text, userId: 'ivan_stein' }),
       });
       const data = await response.json();
       
@@ -178,63 +183,6 @@ export default function Home() {
       sendMessage();
     }
   };
-
-  const handleFileUpload = async (e) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    
-    if (!file.name.toLowerCase().endsWith('.pdf')) {
-      alert('Apenas arquivos PDF são suportados');
-      return;
-    }
-
-    setIsUploading(true);
-    setMessages(prev => [...prev, {
-      id: Date.now().toString(),
-      role: 'system',
-      content: `📚 Processando "${file.name}"...`,
-      timestamp: Date.now()
-    }]);
-
-    try {
-      const formData = new FormData();
-      formData.append('file', file);
-
-      const response = await fetch('/api/upload', {
-        method: 'POST',
-        body: formData
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error || 'Erro ao processar PDF');
-      }
-
-      setMessages(prev => [...prev, {
-        id: (Date.now() + 1).toString(),
-        role: 'assistant',
-        content: data.response || 'Arquivo processado com sucesso!',
-        module: 'RAG',
-        timestamp: Date.now()
-      }]);
-    } catch (error) {
-      console.error('Erro no upload:', error);
-      setMessages(prev => [...prev, {
-        id: (Date.now() + 1).toString(),
-        role: 'error',
-        content: error.message || 'Erro ao processar arquivo',
-        timestamp: Date.now()
-      }]);
-    } finally {
-      setIsUploading(false);
-      if (fileInputRef.current) {
-        fileInputRef.current.value = '';
-      }
-    }
-  };
-
-  const handleEditSpecialist = (specialist) => {
     setEditingSpecialist(specialist);
     setSpecialistInstruction(specialist.instruction);
   };
