@@ -70,17 +70,17 @@ export default function Home() {
   };
 
   return (
-    <div className="flex flex-col md:flex-row h-screen w-full bg-[#09090b] text-[#ededed] font-sans overflow-hidden antialiased selection:bg-zinc-800 selection:text-white">
+    <div className="flex flex-col md:flex-row h-screen w-full bg-[--background] text-[--foreground] overflow-hidden antialiased">
       
-      {/* --- SIDEBAR NAIL-PERFECT (Estilo Desktop Profissional) --- */}
-      <aside className="hidden md:flex flex-col w-[260px] bg-[#09090b] border-r border-[#1f1f22] pt-4 pb-4 px-3 shrink-0 relative z-20">
+      {/* --- SIDEBAR: Tonal Depth Level 1 --- */}
+      <aside className="hidden md:flex flex-col w-[260px] bg-[--surface-container-low] pt-4 pb-4 px-3 shrink-0 relative z-20">
         
         {/* Logo / Header da Sidebar */}
         <div className="flex items-center gap-3 px-3 py-2 mb-8 mt-2 group cursor-pointer">
-          <div className="w-6 h-6 rounded-md bg-[#ffffff] flex items-center justify-center shrink-0 shadow-[0_0_15px_rgba(255,255,255,0.1)]">
-            <Sparkles className="w-3.5 h-3.5 text-[#000000]" />
+          <div className="w-6 h-6 rounded-md liquid-light flex items-center justify-center shrink-0 shadow-[0_0_20px_var(--primary-dim)]">
+            <Sparkles className="w-3.5 h-3.5 text-[--on-primary]" />
           </div>
-          <span className="font-medium text-[14px] text-[#ededed] tracking-tight">Jarvis Workspace</span>
+          <span className="font-bold text-[14px] text-[--foreground] tracking-tight display-font uppercase">Jarvis Workspace</span>
         </div>
 
         {/* Navegação */}
@@ -89,75 +89,75 @@ export default function Home() {
           
           <button 
             onClick={() => setActiveTab('chat')}
-            className={`w-full flex items-center justify-between px-3 py-2 rounded-md text-[13px] transition-all duration-200 ${
+            className={`w-full flex items-center justify-between px-3 py-2.5 rounded-md text-[13px] transition-all duration-300 ${
               activeTab === 'chat' 
-                ? 'bg-[#27272a] text-[#ffffff] font-medium border border-[#3f3f46]' 
-                : 'text-[#a1a1aa] hover:bg-[#18181b] hover:text-[#ededed] border border-transparent'
+                ? 'bg-[--surface-container-highest] text-[--primary] font-semibold ghost-border' 
+                : 'text-[--on-surface-variant] hover:bg-[--surface-container] hover:text-[--foreground]'
             }`}
           >
             <div className="flex items-center gap-2.5">
               <MessageSquare className="w-[14px] h-[14px]" />
               Terminal de IA
             </div>
-            {activeTab === 'chat' && <span className="w-1.5 h-1.5 rounded-full bg-blue-500"></span>}
+            {activeTab === 'chat' && <span className="w-1.5 h-1.5 rounded-full bg-[--primary] shadow-[0_0_8px_var(--primary)]"></span>}
           </button>
           
           <button 
             onClick={() => setActiveTab('dashboard')}
-            className={`w-full flex items-center justify-between px-3 py-2 rounded-md text-[13px] transition-all duration-200 ${
+            className={`w-full flex items-center justify-between px-3 py-2.5 rounded-md text-[13px] transition-all duration-300 ${
               activeTab === 'dashboard' 
-                ? 'bg-[#27272a] text-[#ffffff] font-medium border border-[#3f3f46]' 
-                : 'text-[#a1a1aa] hover:bg-[#18181b] hover:text-[#ededed] border border-transparent'
+                ? 'bg-[--surface-container-highest] text-[--primary] font-semibold ghost-border' 
+                : 'text-[--on-surface-variant] hover:bg-[--surface-container] hover:text-[--foreground]'
             }`}
           >
             <div className="flex items-center gap-2.5">
               <LayoutDashboard className="w-[14px] h-[14px]" />
               Monitor Neural
             </div>
-            {activeTab === 'dashboard' && <span className="w-1.5 h-1.5 rounded-full bg-blue-500"></span>}
+            {activeTab === 'dashboard' && <span className="w-1.5 h-1.5 rounded-full bg-[--primary] shadow-[0_0_8px_var(--primary)]"></span>}
           </button>
         </div>
 
         {/* Rodapé Sidebar */}
-        <div className="pt-4 border-t border-[#1f1f22]">
-          <div className="flex items-center gap-3 px-2 py-2 cursor-pointer hover:bg-[#18181b] rounded-md transition-colors">
-            <div className="w-7 h-7 rounded-full bg-[#18181b] border border-[#27272a] flex items-center justify-center shrink-0">
-              <User className="w-3.5 h-3.5 text-[#a1a1aa]" />
+        <div className="pt-4 border-t border-[--outline-variant]">
+          <div className="flex items-center gap-3 px-2 py-2 cursor-pointer hover:bg-[--surface-container-highest] rounded-md transition-colors group">
+            <div className="w-7 h-7 rounded-full bg-[--surface-container] ghost-border flex items-center justify-center shrink-0 group-hover:bg-[--primary] transition-colors">
+              <User className="w-3.5 h-3.5 text-[--on-surface-variant] group-hover:text-[--on-primary]" />
             </div>
             <div className="flex flex-col flex-1 min-w-0">
-              <span className="text-[13px] font-medium text-[#ededed] truncate">Admin Root</span>
-              <span className="text-[11px] text-[#71717a] truncate">ivan@jarvis.local</span>
+              <span className="text-[13px] font-bold text-[--foreground] truncate display-font uppercase tracking-tight">Admin_Root</span>
+              <span className="text-[10px] text-[--on-surface-variant] truncate font-mono opacity-60">ivan@jarvis.local</span>
             </div>
           </div>
         </div>
       </aside>
 
       {/* --- ÁREA PRINCIPAL (MAIN) --- */}
-      <main className="flex-1 min-w-0 flex flex-col h-full bg-[#09090b] relative">
+      <main className="flex-1 min-w-0 flex flex-col h-full bg-[--surface] relative">
         
         {/* Mobile Top Bar */}
-        <div className="md:hidden flex items-center justify-between px-5 h-14 border-b border-[#1f1f22] bg-[#09090b]/90 backdrop-blur-md sticky top-0 z-40">
+        <div className="md:hidden flex items-center justify-between px-5 h-14 bg-[--surface-container-low]/90 backdrop-blur-md sticky top-0 z-40">
            <div className="flex items-center gap-2">
-              <div className="w-5 h-5 bg-white rounded flex items-center justify-center">
-                 <Sparkles className="w-3 h-3 text-black" />
+              <div className="w-5 h-5 liquid-light rounded flex items-center justify-center">
+                 <Sparkles className="w-3 h-3 text-[--on-primary]" />
               </div>
-              <span className="font-medium text-[13px]">Jarvis</span>
+              <span className="font-bold text-[13px] display-font uppercase tracking-tighter">Jarvis</span>
            </div>
            <div className="flex gap-1.5">
-             <button onClick={() => setActiveTab('chat')} className={`p-1.5 rounded-md ${activeTab === 'chat' ? 'bg-[#27272a] text-white' : 'text-[#71717a]'}`}><MessageSquare className="w-[15px] h-[15px]"/></button>
-             <button onClick={() => setActiveTab('dashboard')} className={`p-1.5 rounded-md ${activeTab === 'dashboard' ? 'bg-[#27272a] text-white' : 'text-[#71717a]'}`}><LayoutDashboard className="w-[15px] h-[15px]"/></button>
+             <button onClick={() => setActiveTab('chat')} className={`p-1.5 rounded-md transition-colors ${activeTab === 'chat' ? 'bg-[--surface-container-highest] text-[--primary] ghost-border' : 'text-[--on-surface-variant]'}`}><MessageSquare className="w-[15px] h-[15px]"/></button>
+             <button onClick={() => setActiveTab('dashboard')} className={`p-1.5 rounded-md transition-colors ${activeTab === 'dashboard' ? 'bg-[--surface-container-highest] text-[--primary] ghost-border' : 'text-[--on-surface-variant]'}`}><LayoutDashboard className="w-[15px] h-[15px]"/></button>
            </div>
         </div>
 
         {/* Header Sutil (Desktop) */}
-        <div className="hidden md:flex h-14 w-full items-center justify-between px-8 border-b border-[#1f1f22] bg-[#09090b] select-none">
-           <div className="flex items-center gap-2 text-[13px] font-medium text-[#a1a1aa]">
-              Aura Framework <span className="text-[#3f3f46]">/</span> <span className="text-[#ededed]">{activeTab === 'chat' ? 'Terminal' : 'Monitor'}</span>
+        <div className="hidden md:flex h-14 w-full items-center justify-between px-8 bg-[--surface] select-none">
+           <div className="flex items-center gap-2 text-[13px] font-medium text-[--on-surface-variant]">
+              <span className="display-font tracking-widest text-[11px] opacity-70">AURA_OS</span> <span className="text-[#3f3f46]">/</span> <span className="text-[--foreground] uppercase tracking-tighter">{activeTab === 'chat' ? 'Terminal' : 'Monitor'}</span>
            </div>
            <div className="flex items-center gap-2">
-              <div className="flex items-center gap-2 bg-[#18181b] border border-[#27272a] px-3 py-1 rounded-full">
-                 <div className="w-1.5 h-1.5 bg-green-500 rounded-full"></div>
-                 <span className="text-[11px] font-semibold text-[#a1a1aa] uppercase tracking-widest">Conectado</span>
+              <div className="flex items-center gap-2 bg-[--surface-container-low] px-3 py-1 rounded-full ghost-border">
+                 <div className="w-1.5 h-1.5 bg-[--primary] rounded-full shadow-[0_0_8px_var(--primary)]"></div>
+                 <span className="text-[10px] font-bold text-[--on-surface-variant] uppercase tracking-widest">System_Live</span>
               </div>
            </div>
         </div>
@@ -173,12 +173,12 @@ export default function Home() {
               {/* Contexto Vazio */}
               {messages.length === 0 && (
                  <div className="flex-1 flex flex-col justify-center max-w-lg mt-10 md:mt-20">
-                    <div className="w-12 h-12 bg-[#18181b] border border-[#27272a] rounded-xl flex items-center justify-center mb-6 shadow-sm">
-                       <Bot className="w-5 h-5 text-[#ededed]" />
+                    <div className="w-12 h-12 bg-[--surface-container] ghost-border rounded-xl flex items-center justify-center mb-6 shadow-[0_10px_30px_rgba(0,0,0,0.5)]">
+                       <Bot className="w-5 h-5 text-[--primary]" />
                     </div>
-                    <h2 className="text-xl md:text-2xl font-medium tracking-tight text-[#ededed] mb-3">Modelos Inicializados.</h2>
-                    <p className="text-[14px] text-[#71717a] leading-relaxed">
-                      AURA IV está escutando na porta principal. Injete relatórios, códigos-fonte ou acione módulos de telemetria diretamente via prompt.
+                    <h2 className="text-4xl font-bold tracking-tighter text-[--foreground] mb-3 display-font uppercase">Modelos Inicializados.</h2>
+                    <p className="text-[15px] text-[--on-surface-variant] leading-relaxed max-w-md">
+                      AURA IV está escutando. Injete relatórios ou acione módulos de telemetria via prompt de comando.
                     </p>
                  </div>
               )}
@@ -186,10 +186,10 @@ export default function Home() {
               {/* Trama de Mensagens (Estilo Linear Comments) */}
               <div className="flex flex-col space-y-8 md:space-y-12">
                  {messages.map((msg, idx) => (
-                   <div key={idx} className={`w-full flex gap-4 ${msg.role === 'user' ? 'justify-end' : 'justify-start'} animate-in fade-in slide-in-from-bottom-2 duration-300`}>
+                   <div key={idx} className={`w-full flex gap-4 ${msg.role === 'user' ? 'justify-end' : 'justify-start'} animate-in fade-in slide-in-from-bottom-2 duration-500`}>
                      
                      {msg.role === 'user' ? (
-                       <div className="max-w-[85%] bg-[#ededed] text-[#09090b] px-4 py-2.5 rounded-lg text-[14px] leading-[1.6] shadow-sm font-medium">
+                       <div className="max-w-[85%] bg-[--foreground] text-[--background] px-4 py-3 rounded-lg text-[14px] leading-[1.6] shadow-xl font-medium">
                          {msg.text}
                        </div>
                      ) : (
@@ -197,33 +197,31 @@ export default function Home() {
                          {/* Ícone Lateral AI */}
                          <div className="shrink-0 mt-0.5">
                             {msg.role === 'system' ? (
-                              <div className="w-7 h-7 bg-[#18181b] border border-[#27272a] rounded shadow-sm flex items-center justify-center">
-                                <Loader2 className="w-3.5 h-3.5 text-[#71717a] animate-spin" />
+                              <div className="w-7 h-7 bg-[--surface-container] ghost-border rounded shadow-sm flex items-center justify-center">
+                                <Loader2 className="w-3.5 h-3.5 text-[--on-surface-variant] animate-spin" />
                               </div>
                             ) : (
-                              <div className="w-7 h-7 bg-[#ffffff] rounded shadow-sm flex items-center justify-center">
-                                <Sparkles className="w-3.5 h-3.5 text-[#000000]" />
+                              <div className="w-7 h-7 liquid-light rounded shadow-[0_0_12px_var(--primary-dim)] flex items-center justify-center">
+                                <Sparkles className="w-3.5 h-3.5 text-[--on-primary]" />
                               </div>
                             )}
                          </div>
                          {/* Bloco de Texto AI */}
                          <div className="flex-1 min-w-0 pt-0.5">
-                            {(msg.module || msg.role !== 'system') && (
-                               <div className="flex items-center gap-2 mb-1">
-                                  <span className="font-semibold text-[13px] text-[#ededed]">
-                                    {msg.role === 'system' ? 'Aura (Processamento)' : 'Aura'}
-                                  </span>
-                                  {msg.module && (
-                                    <span className="text-[10px] font-bold uppercase tracking-wider text-[#71717a] bg-[#18181b] border border-[#27272a] px-1.5 py-0.5 rounded">
-                                      {msg.module}
-                                    </span>
-                                  )}
-                               </div>
-                            )}
-                            <div className={`text-[14px] md:text-[15px] leading-relaxed ${
-                               msg.role === 'error' ? 'text-red-400 font-medium' : 
-                               msg.role === 'system' ? 'text-[#71717a]' : 
-                               'text-[#d4d4d8] font-light'
+                            <div className="flex items-center justify-between mb-1.5 h-7">
+                               <span className="font-bold text-[12px] text-[--primary] display-font uppercase tracking-wider">
+                                 {msg.role === 'system' ? 'Kernel_Processing' : 'Aura_System'}
+                               </span>
+                               {msg.module && (
+                                 <span className="text-[9px] font-black uppercase tracking-[0.2em] text-[--on-primary] bg-[--primary] px-2 py-0.5 rounded-sm transform translate-x-1 -translate-y-1 rotate-1">
+                                   {msg.module}
+                                 </span>
+                               )}
+                            </div>
+                            <div className={`text-[15px] leading-[1.7] ${
+                               msg.role === 'error' ? 'text-red-400 font-bold' : 
+                               msg.role === 'system' ? 'text-[--on-surface-variant]' : 
+                               'text-[--foreground]'
                             }`}>
                                {msg.text}
                             </div>
@@ -262,19 +260,19 @@ export default function Home() {
                </div>
 
                {/* Kpis / Métricas */}
-               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-5 mb-14 animate-in fade-in slide-in-from-bottom-2 duration-500">
+               <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-14 animate-in fade-in slide-in-from-bottom-2 duration-500">
                   {[
                     { label: 'Índice de Base', value: dashboardData.totalKnowledge, desc: 'Setores alocados em memória RAG', icon: Database },
                     { label: 'Saúde Kernel', value: '100%', desc: 'Sem desvios detectados', icon: Shield },
                     { label: 'Escalonamento', value: 'Máximo', desc: 'Recursos disponíveis', icon: Zap },
                   ].map((s, i) => (
-                    <div key={i} className="flex flex-col p-5 bg-[#09090b] border border-[#27272a] rounded-xl hover:border-[#3f3f46] transition-colors relative">
-                       <div className="flex items-center gap-2 mb-3 text-[#71717a]">
-                          <s.icon className="w-4 h-4" />
-                          <span className="text-[12px] font-medium tracking-wide uppercase">{s.label}</span>
+                    <div key={i} className="flex flex-col p-6 bg-[--surface-container-low] ghost-border rounded-xl hover:bg-[--surface-container] transition-all duration-300 group">
+                       <div className="flex items-center gap-2 mb-4 text-[--on-surface-variant]">
+                          <s.icon className="w-4 h-4 group-hover:text-[--primary] transition-colors" />
+                          <span className="text-[11px] font-bold tracking-[0.1em] uppercase display-font">{s.label}</span>
                        </div>
-                       <h3 className="text-3xl font-semibold text-[#ededed] mb-1">{s.value}</h3>
-                       <p className="text-[13px] text-[#71717a]">{s.desc}</p>
+                       <h3 className="text-4xl font-bold text-[--foreground] mb-2 display-font tracking-tighter">{s.value}</h3>
+                       <p className="text-[13px] text-[--on-surface-variant] opacity-60">{s.desc}</p>
                     </div>
                   ))}
                </div>
@@ -285,31 +283,32 @@ export default function Home() {
                      <span className="text-[12px] text-[#71717a] font-mono">4 ACTIVE</span>
                   </div>
                   
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                     {((dashboardData.specialists && dashboardData.specialists.length > 0) ? dashboardData.specialists : [
                       { id: 'CODING', name: 'Engenharia de Base', icon: Zap, instruction: 'Otimização avançada, clean code e design patterns estruturais.' },
                       { id: 'FINANCE', name: 'Mercados & Dados', icon: DollarSign, instruction: 'Projeções e cálculos estratégicos aprofundados (SaaS/B2B).' },
                       { id: 'HEALTH', name: 'Análise Biológica', icon: Heart, instruction: 'Avaliação estrita da literatura científica e protocolos.' },
                       { id: 'PERSONAL', name: 'Fluxo Assistencial', icon: Settings2, instruction: 'Classificação de arquivos, geração de rotinas e pautas.' },
                     ]).map((s, i) => (
-                       <div key={i} className="flex gap-4 p-5 bg-[#09090b] border border-[#27272a] rounded-xl hover:bg-[#18181b] transition-all group cursor-pointer">
-                          <div className="w-10 h-10 mt-1 rounded bg-[#ffffff] flex items-center justify-center text-[#09090b] shrink-0">
-                            {(s.icon) ? <s.icon className="w-5 h-5"/> : <Bot className="w-5 h-5" />}
+                       <div key={i} className="flex gap-4 p-6 bg-[--surface-container-low] rounded-xl hover:bg-[--surface-container-highest] transition-all duration-300 group cursor-pointer relative overflow-hidden">
+                          <div className="absolute top-0 right-0 w-32 h-32 bg-[--primary] opacity-[0.02] -mr-16 -mt-16 rounded-full group-hover:opacity-[0.05] transition-opacity"></div>
+                          <div className="w-12 h-12 rounded bg-[--surface-container-highest] ghost-border flex items-center justify-center text-[--primary] shrink-0 group-hover:liquid-light group-hover:text-[--on-primary] transition-all duration-500 shadow-[0_0_15px_rgba(0,0,0,0.3)]">
+                            {(s.icon) ? <s.icon className="w-6 h-6"/> : <Bot className="w-6 h-6" />}
                           </div>
                           
-                          <div className="flex flex-col w-full">
-                            <div className="flex items-center justify-between mb-1 text-white">
-                               <h4 className="text-[14px] font-semibold text-[#ededed]">{s.name}</h4>
-                               <span className="text-[10px] uppercase font-bold tracking-widest text-[#71717a]">
+                          <div className="flex flex-col w-full relative z-10">
+                            <div className="flex items-center justify-between mb-2">
+                               <h4 className="text-[15px] font-bold text-[--foreground] display-font uppercase tracking-tight">{s.name}</h4>
+                               <span className="text-[9px] uppercase font-black tracking-widest text-[--on-surface-variant]">
                                  {s.id}
                                </span>
                             </div>
-                            <p className="text-[13px] text-[#a1a1aa] leading-relaxed mb-3">
+                            <p className="text-[13px] text-[--on-surface-variant] leading-[1.6] mb-4 opacity-80">
                                {s.instruction}
                             </p>
-                            <div className="mt-auto pt-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                               <span className="text-[12px] font-medium text-blue-500 hover:text-blue-400 flex items-center gap-1">
-                                 Sintonizar Módulo &rarr;
+                            <div className="mt-auto pt-2 opacity-0 group-hover:opacity-100 transform translate-y-2 group-hover:translate-y-0 transition-all duration-300">
+                               <span className="text-[11px] font-black tracking-[0.15em] text-[--primary] uppercase flex items-center gap-2">
+                                 Sintonizar_Módulo <span className="text-[14px]">&rarr;</span>
                                </span>
                             </div>
                           </div>
@@ -322,14 +321,14 @@ export default function Home() {
 
           {/* INPUT BAR FIXA - (Linear Style Flat) */}
           {activeTab === 'chat' && (
-            <div className="fixed bottom-0 left-0 md:left-[260px] right-0 bg-[#09090b]/80 backdrop-blur-xl border-t border-[#1f1f22] p-4 md:py-6">
+            <div className="fixed bottom-0 left-0 md:left-[260px] right-0 glass-overlay border-t border-[--outline-variant] p-5 md:py-8">
               <div className="w-full max-w-3xl mx-auto flex flex-col relative px-1">
                 
-                <div className="bg-[#18181b] border border-[#27272a] rounded-xl shadow-sm focus-within:border-[#3f3f46] focus-within:ring-1 focus-within:ring-[#3f3f46] transition-all flex items-end">
+                <div className="bg-[--surface-container-highest] rounded-xl shadow-2xl focus-within:ghost-border transition-all flex items-end">
                   
                   <button 
                     onClick={() => fileInputRef.current.click()}
-                    className="p-3 mb-0.5 rounded-bl-xl text-[#71717a] hover:text-[#ededed] hover:bg-[#27272a] transition-colors shrink-0"
+                    className="p-3 mb-0.5 rounded-bl-xl text-[--on-surface-variant] hover:text-[--primary] hover:bg-[--surface-container] transition-colors shrink-0"
                   >
                     <Paperclip className="w-[18px] h-[18px]" />
                   </button>
@@ -345,24 +344,30 @@ export default function Home() {
                       }
                     }}
                     rows="1"
-                    placeholder={isLearning ? "Indexando base neural..." : "Pressione Enter para enviar..."}
-                    className="flex-1 max-h-[200px] min-h-[44px] bg-transparent text-[#ededed] placeholder:text-[#52525b] focus:outline-none resize-none py-[12px] px-2 text-[14px] leading-relaxed overflow-y-auto"
+                    placeholder={isLearning ? "Indexando base neural..." : "Aguardando comando..."}
+                    className="flex-1 max-h-[200px] min-h-[44px] bg-transparent text-[--foreground] placeholder:text-[--on-surface-variant] placeholder:opacity-40 focus:outline-none resize-none py-[12px] px-2 text-[14px] leading-relaxed overflow-y-auto"
                     style={{ fieldSizing: 'content' }}
                   />
                   
                   <button
                     onClick={sendMessage}
                     disabled={!input.trim() || isLoading}
-                    className="m-2 shrink-0 bg-[#ededed] text-[#09090b] rounded shadow-sm hover:bg-white disabled:bg-[#27272a] disabled:text-[#52525b] transition-colors w-[32px] h-[32px] flex items-center justify-center"
+                    className="m-2 shrink-0 liquid-light text-[--on-primary] rounded shadow-[0_0_15px_var(--primary-dim)] hover:brightness-110 disabled:bg-[--surface-container-highest] disabled:text-[--on-surface-variant] disabled:shadow-none transition-all w-[36px] h-[36px] flex items-center justify-center"
                   >
-                    <Send className="w-[14px] h-[14px]" />
+                    <Send className="w-[16px] h-[16px]" />
                   </button>
                 </div>
 
-                <div className="text-center mt-2 flex items-center justify-center gap-2">
-                   <div className="w-1.5 h-1.5 bg-[#27272a] rounded-full"></div>
-                   <p className="text-[11px] font-medium tracking-wide text-[#71717a] uppercase">Sistema IA Sujeito a alucinações. Valide os códigos entregues.</p>
-                   <div className="w-1.5 h-1.5 bg-[#27272a] rounded-full"></div>
+                {isLearning && (
+                  <div className="mt-3 kinetic-progress-track">
+                    <div className="kinetic-progress-fill w-[45%]" />
+                  </div>
+                )}
+
+                <div className="text-center mt-4 flex items-center justify-center gap-3">
+                   <div className="w-1 h-1 bg-[--primary] rounded-full opacity-40"></div>
+                   <p className="text-[10px] font-bold tracking-[0.2em] text-[--on-surface-variant] uppercase display-font">Core_Validation: Active_Neural_Check</p>
+                   <div className="w-1 h-1 bg-[--primary] rounded-full opacity-40"></div>
                 </div>
               </div>
             </div>
