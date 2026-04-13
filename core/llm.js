@@ -18,7 +18,7 @@ FOCO ATUAL: ${customInstruction || "Gestão Geral e Auxílio ao Ivan Stein"}.
 REGRAS: Seja conciso, técnico e sofisticado.`;
 
     return genAI.getGenerativeModel({ 
-        model: "gemini-1.5-flash",
+        model: "gemini-2.5-flash-lite",
         systemInstruction: baseInstruction
     });
 }
