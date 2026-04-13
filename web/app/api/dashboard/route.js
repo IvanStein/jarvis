@@ -5,17 +5,48 @@ export async function GET() {
     try {
         const supabase = getSupabase();
         
-        // 1. Buscar configs dos especialistas
-        const { data: configs } = await supabase.from('specialists_config').select('*');
+        const { data: configs, error } = await supabase.from('specialists_config').select('*');
         
-        // 2. Buscar estatísticas de conhecimento (RAG)
+        if (error) {
+            console.error('Erro ao buscar especialistas:', error);
+        }
+
         const { count } = await supabase.from('documents').select('*', { count: 'exact', head: true });
 
         return NextResponse.json({
             specialists: configs || [],
-            totalKnowledge: count || 0
+            totalKnowledge: count || 0,
+            systemStatus: 'online'
         });
     } catch (error) {
+        console.error('Erro no dashboard:', error);
+        return NextResponse.json({ 
+            error: error.message,
+            specialists: [],
+            totalKnowledge: 0,
+            systemStatus: 'offline'
+        }, { status: 500 });
+    }
+}
+
+export async function POST(request) {
+    try {
+        const { specialistId, instruction } = await request.json();
+        const supabase = getSupabase();
+        
+        const { data, error } = await supabase.from('specialists_config')
+            .upsert({ 
+                id: specialistId, 
+                instruction: instruction,
+                updated_at: new Date().toISOString()
+            }, { onConflict: 'id' })
+            .select();
+
+        if (error) throw error;
+
+        return NextResponse.json({ success: true, data });
+    } catch (error) {
+        console.error('Erro ao treinar especialista:', error);
         return NextResponse.json({ error: error.message }, { status: 500 });
     }
 }
