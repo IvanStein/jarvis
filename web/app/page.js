@@ -110,8 +110,10 @@ export default function Home() {
   };
 
   const sendMessage = async (overrideText = null) => {
-    const text = overrideText || input;
-    if (!text.trim() || isLoading) return;
+    const isEvent = overrideText && typeof overrideText === 'object' && ('nativeEvent' in overrideText || 'currentTarget' in overrideText);
+    const text = (overrideText && !isEvent) ? overrideText : input;
+    const currentConvId = activeConversationId;
+    if (!currentConvId || !text.trim() || isLoading) return;
 
     // Detectar links YouTube na mensagem
     const youtubeRegex = /(youtube\.com|youtu\.be)[^\s]*/gi;
@@ -124,7 +126,7 @@ export default function Home() {
       timestamp: Date.now()
     };
 
-    setMessages(prev => [...prev, userMessage]);
+    addMessageToActive(currentConvId, userMessage);
     setInput('');
     setIsLoading(true);
 
@@ -140,21 +142,21 @@ export default function Home() {
         throw new Error(data.error || 'Erro na resposta');
       }
       
-      setMessages(prev => [...prev, { 
+      addMessageToActive(currentConvId, { 
         id: (Date.now() + 1).toString(),
         role: 'assistant', 
         content: data.response, 
         module: data.module || activeSpecialist?.id || 'JARVIS',
         timestamp: Date.now()
-      }]);
+      });
     } catch (error) {
       console.error('Erro ao enviar mensagem:', error);
-      setMessages(prev => [...prev, { 
+      addMessageToActive(currentConvId, { 
         id: (Date.now() + 1).toString(),
         role: 'error', 
         content: error.message || 'Falha crítica na rede.', 
         timestamp: Date.now()
-      }]);
+      });
     } finally {
       setIsLoading(false);
     }
