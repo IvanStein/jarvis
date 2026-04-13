@@ -105,9 +105,16 @@ export default function Home() {
             const newConversations = [...prev];
             const index = newConversations.findIndex(c => c.id === activeConversationId);
             if (index !== -1) {
+              const currentMessages = newConversations[index].messages;
+              
+              // Se o histórico for igual à memória atual, não faz nada
+              if (JSON.stringify(currentMessages) === JSON.stringify(mappedMessages)) {
+                return prev;
+              }
+
               newConversations[index] = {
                 ...newConversations[index],
-                messages: mappedMessages.length > 0 ? mappedMessages : newConversations[index].messages
+                messages: mappedMessages.length > 0 ? mappedMessages : currentMessages
               };
             }
             return newConversations;
@@ -446,7 +453,12 @@ timestamp: Date.now()
           </div>
         </div>
 
-        <div className="p-4 border-t border-[#27272a]">
+        <div className="p-4 border-t border-[#27272a] space-y-3">
+          <div className="flex items-center justify-between px-3 text-[11px] font-medium text-[#71717a] uppercase tracking-wider">
+            <span>Status do Banco</span>
+            <div className={`w-2 h-2 rounded-full ${dashboardData.systemStatus === 'offline' ? 'bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.5)]' : 'bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.5)]'} animate-pulse`} />
+          </div>
+
           <div className="flex items-center gap-3 px-3 py-2.5 hover:bg-[#1f1f22] rounded-lg cursor-pointer transition-colors group">
             <div className="w-8 h-8 bg-gradient-to-br from-[#10A37F] to-[#0d8a66] rounded-full flex items-center justify-center shadow-lg">
               <User className="w-4 h-4 text-white" />
