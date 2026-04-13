@@ -89,7 +89,7 @@ export default function Home() {
 
   const fetchHistory = async () => {
     try {
-      const res = await fetch(`/api/history?userId=ivan_stein&conversationId=${activeId}`);
+      const res = await fetch(`/api/history?userId=ivan_stein&conversationId=${activeConversationId}`);
       if (res.ok) {
         const messages = await res.json();
         if (Array.isArray(messages)) {
@@ -103,7 +103,7 @@ export default function Home() {
           
           setConversations(prev => {
             const newConversations = [...prev];
-            const index = newConversations.findIndex(c => c.id === activeId);
+            const index = newConversations.findIndex(c => c.id === activeConversationId);
             if (index !== -1) {
               newConversations[index] = {
                 ...newConversations[index],
@@ -121,7 +121,7 @@ export default function Home() {
 
   useEffect(() => {
     fetchHistory();
-  }, [activeId]);
+  }, [activeConversationId]);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -177,7 +177,7 @@ export default function Home() {
         body: JSON.stringify({ 
           message: text, 
           userId: 'ivan_stein',
-          conversationId: activeId
+          conversationId: activeConversationId
         }),
       });
       
