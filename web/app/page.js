@@ -671,7 +671,7 @@ timestamp: Date.now()
               </div>
               
               {/* Especialistas Grid */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
                 {specialists.map(spec => (
                   <div 
                     key={spec.id}
@@ -726,6 +726,49 @@ timestamp: Date.now()
                     )}
                   </div>
                 ))}
+              </div>
+
+              {/* System Config Section */}
+              <div className="mt-8 border-t border-[#27272a] pt-8">
+                <h2 className="text-lg font-semibold flex items-center gap-2 mb-4">
+                  <Settings2 className="w-5 h-5 text-[#10A37F]" />
+                  Configuração do Núcleo (Ambiente)
+                </h2>
+                <div className="bg-[#1f1f22] rounded-xl border border-[#27272a] p-6 space-y-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                      <div className="flex items-center justify-between mb-2">
+                        <label className="text-xs text-[#71717a] uppercase tracking-wider block">Gemini API Key</label>
+                        <a 
+                          href="https://aistudio.google.com/app/apikey" 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          className="text-[10px] text-[#10A37F] hover:underline flex items-center gap-1 font-bold"
+                        >
+                          <PlaySquare className="w-3 h-3" />
+                          OBTER CHAVE
+                        </a>
+                      </div>
+                      <div className="bg-[#0e0e0e] border border-[#27272a] rounded-lg px-3 py-2 text-sm flex items-center justify-between font-mono">
+                        <span className="truncate opacity-60">AIzaSy...{process.env.NEXT_PUBLIC_GEMINI_API_KEY ? 'CONECTADO' : 'PENDENTE'}</span>
+                        <div className={`w-2 h-2 rounded-full ${process.env.NEXT_PUBLIC_GEMINI_API_KEY ? 'bg-green-500' : 'bg-red-500'}`} />
+                      </div>
+                    </div>
+                    <div>
+                      <label className="text-xs text-[#71717a] uppercase tracking-wider block mb-2">Supabase Status</label>
+                      <div className="bg-[#0e0e0e] border border-[#27272a] rounded-lg px-3 py-2 text-sm flex items-center justify-between">
+                        <span className="truncate opacity-60 italic">{dashboardData.systemStatus === 'online' ? 'Banco de Dados Sincronizado' : 'Banco de Dados Offline'}</span>
+                        <div className={`w-2 h-2 rounded-full ${dashboardData.systemStatus === 'online' ? 'bg-green-500' : 'bg-red-500'}`} />
+                      </div>
+                    </div>
+                  </div>
+                  <div className="p-3 bg-[#10A37F]/10 border border-[#10A37F]/20 rounded-lg">
+                    <p className="text-[11px] text-[#a1a1aa] leading-relaxed">
+                      <span className="text-[#10A37F] font-bold">INFO:</span> As chaves de servidor (Supabase Key) não são exibidas por segurança. 
+                      Para alterar as chaves na Vercel, acesse <code className="bg-[#262626] px-1 rounded">Settings > Environment Variables</code> no painel do projeto e realize um novo deploy.
+                    </p>
+                  </div>
+                </div>
               </div>
             </div>
           )}
