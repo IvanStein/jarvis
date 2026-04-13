@@ -9,7 +9,12 @@ export const getSupabase = () => {
     const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || process.env.SUPABASE_ANON_KEY;
 
     if (!supabaseUrl || !supabaseKey) {
-        console.warn("Aviso: Chaves do Supabase não encontradas no ambiente (verifique NEXT_PUBLIC_SUPABASE_URL/SUPABASE_URL).");
+        console.error("ERRO: Configuração do Supabase ausente.");
+        console.error("Variáveis verificadas:", { 
+            hasUrl: !!supabaseUrl, 
+            hasKey: !!supabaseKey,
+            envKeys: Object.keys(process.env).filter(k => k.includes('SUPABASE'))
+        });
         return null;
     }
 
