@@ -89,10 +89,10 @@ export default function Home() {
 
   const fetchHistory = async () => {
     try {
-      const res = await fetch('/api/history?userId=ivan_stein');
+      const res = await fetch(`/api/history?userId=ivan_stein&conversationId=${activeId}`);
       if (res.ok) {
         const messages = await res.json();
-        if (Array.isArray(messages) && messages.length > 0) {
+        if (Array.isArray(messages)) {
           const mappedMessages = messages.map(m => ({
             id: Math.random().toString(),
             role: m.role,
@@ -103,10 +103,13 @@ export default function Home() {
           
           setConversations(prev => {
             const newConversations = [...prev];
-            newConversations[0] = {
-              ...newConversations[0],
-              messages: mappedMessages
-            };
+            const index = newConversations.findIndex(c => c.id === activeId);
+            if (index !== -1) {
+              newConversations[index] = {
+                ...newConversations[index],
+                messages: mappedMessages.length > 0 ? mappedMessages : newConversations[index].messages
+              };
+            }
             return newConversations;
           });
         }
@@ -115,6 +118,10 @@ export default function Home() {
       console.error('Erro ao carregar histórico:', error);
     }
   };
+
+  useEffect(() => {
+    fetchHistory();
+  }, [activeId]);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -167,7 +174,11 @@ export default function Home() {
       const response = await fetch('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: text, userId: 'ivan_stein' }),
+        body: JSON.stringify({ 
+          message: text, 
+          userId: 'ivan_stein',
+          conversationId: activeId
+        }),
       });
       
       const contentType = response.headers.get('content-type');

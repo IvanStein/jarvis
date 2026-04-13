@@ -17,7 +17,7 @@ export async function POST(request) {
         console.log('[API /chat] Nova requisição recebida');
         
         const body = await request.json().catch(() => ({}));
-        const { message, userId } = body;
+        const { message, userId, conversationId } = body;
 
         if (!message) {
             return NextResponse.json({ error: 'Mensagem é obrigatória' }, { status: 400 });
@@ -26,8 +26,8 @@ export async function POST(request) {
         // Timer para monitorar lentidão
         const start = Date.now();
         
-        console.log('[API /chat] Executando agente para:', userId);
-        const result = await runAgent(message, userId || 'anon');
+        console.log(`[API /chat] Executando agente para: ${userId} em ${conversationId || 'default'}`);
+        const result = await runAgent(message, userId || 'anon', conversationId || 'default');
         
         const duration = Date.now() - start;
         console.log(`[API /chat] Agente finalizado em ${duration}ms`);

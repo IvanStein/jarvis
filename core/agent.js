@@ -3,7 +3,7 @@ import { saveMessage, getLastMessages, getUserFacts, getSpecialistConfig, update
 import { SPECIALISTS, routeToSpecialist } from './specialists.js';
 import { learnFromYouTube } from '../rag/ingest.js';
 
-export async function runAgent(userInput, userId) {
+export async function runAgent(userInput, userId, conversationId = 'default') {
     console.log(`[ORQUESTRADOR] Analisando requisição...`);
     
     // Import dinâmico para evitar quebra de inicialização se a lib de áudio falhar
@@ -44,14 +44,14 @@ export async function runAgent(userInput, userId) {
 
     // 4. Buscar memórias e histórico
     const userFacts = await getUserFacts(userId);
-    const recentHistory = await getLastMessages(userId, 5);
+    const recentHistory = await getLastMessages(userId, 5, conversationId);
     
     // 5. Chamada ao LLM
     const contextPrefix = userFacts ? `[MEMÓRIA DE IVAN: ${userFacts}]\n` : "";
     const responseText = await callGemini(userInput, recentHistory, `${specialistInstructions}\n${contextPrefix}`);
     
-    await saveMessage(userId, 'user', userInput);
-    await saveMessage(userId, 'assistant', responseText);
+    await saveMessage(userId, 'user', userInput, conversationId);
+    await saveMessage(userId, 'assistant', responseText, conversationId);
     
     return { response: responseText, module: dbConfig ? dbConfig.name : (specialistKey || "Jarvis") };
 }

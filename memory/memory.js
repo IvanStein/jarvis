@@ -3,14 +3,19 @@ import { getSupabase } from '../config/supabase.js';
 /**
  * Salva uma mensagem no histórico do banco de dados.
  */
-export async function saveMessage(userId, role, content) {
+export async function saveMessage(userId, role, content, conversationId = 'default') {
     const supabase = getSupabase();
     if (!supabase) return;
 
     try {
         const { error } = await supabase
             .from('chat_messages')
-            .insert([{ user_id: userId, role, content }]);
+            .insert([{ 
+                user_id: userId, 
+                role, 
+                content,
+                conversation_id: conversationId 
+            }]);
 
         if (error) throw error;
     } catch (error) {
@@ -19,9 +24,9 @@ export async function saveMessage(userId, role, content) {
 }
 
 /**
- * Recupera as últimas mensagens de um usuário.
+ * Recupera as últimas mensagens de um usuário em uma conversa específica.
  */
-export async function getLastMessages(userId, limit = 10) {
+export async function getLastMessages(userId, limit = 10, conversationId = 'default') {
     const supabase = getSupabase();
     if (!supabase) return [];
 
@@ -30,6 +35,7 @@ export async function getLastMessages(userId, limit = 10) {
             .from('chat_messages')
             .select('role, content')
             .eq('user_id', userId)
+            .eq('conversation_id', conversationId)
             .order('created_at', { ascending: false })
             .limit(limit);
 
