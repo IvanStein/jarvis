@@ -1,11 +1,6 @@
 // rag/ingest.js
 import { getSupabase } from '../config/supabase.js';
-import * as YT from 'youtube-transcript-api';
-import * as PDFParse from 'pdf-parse';
-
-// Detectar se é importação default ou módulo cheio (Garante compatibilidade Vercel/ESM)
-const YoutubeTranscript = YT.default || (YT.YoutubeTranscript) || YT;
-const pdf = PDFParse.default || PDFParse;
+// Imports dynamic to prevent Vercel Serverless crashes on startup
 
 /**
  * Adiciona conhecimento à biblioteca a partir de texto puro.
@@ -40,6 +35,8 @@ export async function ingestKnowledge(text, metadata = {}) {
  */
 export async function learnFromYouTube(url) {
     try {
+        const YT = await import('youtube-transcript-api');
+        const YoutubeTranscript = YT.default || (YT.YoutubeTranscript) || YT;
         const videoId = url.split('v=')[1]?.split('&')[0] || url.split('/').pop();
         const transcriptItems = await YoutubeTranscript.fetchTranscript(videoId, { lang: 'pt' });
         const fullText = transcriptItems.map(i => i.text).join(' ');
@@ -62,6 +59,8 @@ export async function learnFromYouTube(url) {
  */
 export async function learnFromPDF(fileBuffer, fileName) {
     try {
+        const PDFParse = await import('pdf-parse');
+        const pdf = PDFParse.default || PDFParse;
         // Chamar o pdf-parse de forma segura
         const data = await pdf(fileBuffer);
         
