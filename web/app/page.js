@@ -88,39 +88,54 @@ export default function Home() {
   }, [activeTab]);
 
   const fetchHistory = async () => {
+    // 1. Tentar carregar do LocalStorage instantaneamente (Resiliência)
+    const localData = localStorage.getItem(`jarvis_history_${activeConversationId}`);
+    if (localData) {
+      try {
+        const localMessages = JSON.parse(localData);
+        updateConversationMessages(activeConversationId, localMessages);
+      } catch (e) {
+        console.error("Erro ao ler backup local", e);
+      }
+    }
+
+    // 2. Tentar buscar na nuvem (Supabase)
     try {
       const res = await fetch(`/api/history?userId=ivan_stein&conversationId=${activeConversationId}`);
       if (res.ok) {
         const messages = await res.json();
-        if (Array.isArray(messages)) {
+        if (Array.isArray(messages) && messages.length > 0) {
           const mappedMessages = messages.map(m => ({
             id: Math.random().toString(),
             role: m.role,
             content: m.content,
             timestamp: Date.now(),
-            module: m.role === 'assistant' ? 'Histórico' : null
+            module: m.role === 'assistant' ? 'Histórico (Nuvem)' : null
           }));
           
-          setConversations(prev => {
-            const newConversations = [...prev];
-            const index = newConversations.findIndex(c => c.id === activeConversationId);
-            if (index !== -1) {
-              newConversations[index] = {
-                ...newConversations[index],
-                messages: mappedMessages.length > 0 ? mappedMessages : newConversations[index].messages
-              };
-            }
-            return newConversations;
-          });
+          updateConversationMessages(activeConversationId, mappedMessages);
+          // Atualiza o backup local com o dado mais recente da nuvem
+          localStorage.setItem(`jarvis_history_${activeConversationId}`, JSON.stringify(mappedMessages));
         }
       }
     } catch (error) {
-      console.error('Erro ao carregar histórico:', error);
+      console.warn('Supabase não atingível, mantendo dados locais.');
     }
   };
 
+  const updateConversationMessages = (convId, msgs) => {
+    setConversations(prev => {
+      const newConversations = [...prev];
+      const index = newConversations.findIndex(c => c.id === convId);
+      if (index !== -1) {
+        newConversations[index] = { ...newConversations[index], messages: msgs };
+      }
+      return newConversations;
+    });
+  };
+
   useEffect(() => {
-    fetchHistory();
+    if (activeConversationId) fetchHistory();
   }, [activeConversationId]);
 
   useEffect(() => {
@@ -166,6 +181,10 @@ export default function Home() {
       timestamp: Date.now()
     };
 
+    const currentMessages = activeConversation?.messages || [];
+    const updatedMessagesWithUser = [...currentMessages, userMessage];
+    localStorage.setItem(`jarvis_history_${currentConvId}`, JSON.stringify(updatedMessagesWithUser));
+
     addMessageToActive(currentConvId, userMessage);
     setInput('');
     setIsLoading(true);
@@ -188,13 +207,18 @@ export default function Home() {
           throw new Error(data.error || `Erro ${response.status}: Falha na API`);
         }
         
-        addMessageToActive(currentConvId, { 
+        const assistantMessage = { 
           id: (Date.now() + 1).toString(),
           role: 'assistant', 
           content: data.response, 
           module: data.module || activeSpecialist?.id || 'JARVIS',
           timestamp: Date.now()
-        });
+        };
+
+        addMessageToActive(currentConvId, assistantMessage);
+        
+        // Backup local final com a resposta da IA
+        localStorage.setItem(`jarvis_history_${currentConvId}`, JSON.stringify([...updatedMessagesWithUser, assistantMessage]));
       } else {
         const errorText = await response.text();
         console.error('Resposta não-JSON recebida:', errorText.substring(0, 200));
