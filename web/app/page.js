@@ -5,7 +5,7 @@ import {
   MessageSquare, Plus, ChevronDown, Copy, Check, 
   Menu, X, Zap, Database, Heart, Stethoscope, Brain, Settings2, Save, 
   LayoutDashboard, Activity, BookOpen, FileText, Footprints, PlaySquare, Share2,
-  Code, Calculator, Calendar, PenTool, Upload, File
+  Code, Calculator, Calendar, PenTool, Upload, File, Trash2
 } from 'lucide-react';
 
 const MODELS = [
@@ -25,8 +25,7 @@ const SPECIALIST_TEMPLATES = [
 ];
 
 const DEFAULT_CONVERSATIONS = [
-  { id: '1', title: 'Análise de código', date: 'Hoje', messages: [], module: 'CODING' },
-  { id: '2', title: 'Revisão de arquitetura', date: 'Ontem', messages: [], module: 'FINANCE' },
+  { id: '1', title: 'Análise de código', date: 'Hoje', messages: [{ id: 'welcome', role: 'assistant', content: 'Saudações, Ivan. O sistema está operacional.', module: 'CODING', timestamp: Date.now() }], module: 'CODING' },
 ];
 
 export default function Home() {
@@ -34,7 +33,7 @@ export default function Home() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [conversations, setConversations] = useState(DEFAULT_CONVERSATIONS);
   const [activeConversationId, setActiveConversationId] = useState('1');
-  const [messages, setMessages] = useState([]);
+  
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [selectedModel, setSelectedModel] = useState(MODELS[0]);
@@ -53,7 +52,32 @@ export default function Home() {
   const messagesEndRef = useRef(null);
   const textareaRef = useRef(null);
 
+  const addMessageToActive = (convId, msg) => {
+    setConversations(prev => prev.map(c => {
+      if (c.id === convId) {
+        let newTitle = c.title;
+        if ((newTitle === 'Nova conversa' || !newTitle) && msg.role === 'user') {
+          newTitle = msg.content.substring(0, 20) + (msg.content.length > 20 ? '...' : '');
+        }
+        return { ...c, title: newTitle, messages: [...c.messages, msg] };
+      }
+      return c;
+    }));
+  };
+
+  const handleDeleteConversation = (e, id) => {
+    e.stopPropagation();
+    setConversations(prev => {
+      const next = prev.filter(c => c.id !== id);
+      if (activeConversationId === id) {
+        setActiveConversationId(next.length > 0 ? next[0].id : null);
+      }
+      return next;
+    });
+  };
+
   const activeConversation = conversations.find(c => c.id === activeConversationId);
+  const messages = activeConversation?.messages || [];
 
   useEffect(() => {
     if (activeTab === 'dashboard') {
@@ -61,19 +85,7 @@ export default function Home() {
     }
   }, [activeTab]);
 
-  useEffect(() => {
-    if (activeConversation && activeConversation.messages.length > 0) {
-      setMessages(activeConversation.messages);
-    } else {
-      setMessages([{ 
-        id: 'welcome', 
-        role: 'assistant', 
-        content: 'Saudações, Ivan. O sistema está operacional. Selecione um especialista ou envie uma mensagem.', 
-        module: activeSpecialist?.id || 'JARVIS',
-        timestamp: Date.now() 
-      }]);
-    }
-  }, [activeConversationId, activeSpecialist]);
+  // messages now derived directly
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -153,23 +165,25 @@ export default function Home() {
       id: Date.now().toString(),
       title: 'Nova conversa',
       date: 'Agora',
-      messages: [],
+      messages: [{ 
+        id: 'welcome', 
+        role: 'assistant', 
+        content: 'Sistema inicializado. Aguardando comando.', 
+        module: activeSpecialist?.id || 'JARVIS',
+        timestamp: Date.now() 
+      }],
       module: activeSpecialist?.id || 'JARVIS'
     };
     setConversations(prev => [newConv, ...prev]);
     setActiveConversationId(newConv.id);
-    setMessages([{ 
-      id: 'welcome', 
-      role: 'assistant', 
-      content: 'Sistema inicializado. Aguardando comando.', 
-      module: activeSpecialist?.id || 'JARVIS',
-      timestamp: Date.now() 
-    }]);
     setSidebarOpen(false);
   };
 
   const handleFileUpload = async (e) => {
     const file = e.target.files?.[0];
+    const currentConvId = activeConversationId;
+    if (!currentConvId) return;
+
     if (!file) return;
     
     if (!file.name.toLowerCase().endsWith('.pdf')) {
@@ -178,12 +192,14 @@ export default function Home() {
     }
 
     setIsUploading(true);
-    setMessages(prev => [...prev, {
+    addMessageToActive(currentConvId, {
+
       id: Date.now().toString(),
       role: 'system',
       content: `📚 Processando "${file.name}"...`,
-      timestamp: Date.now()
-    }]);
+      
+timestamp: Date.now()
+});
 
     try {
       const formData = new FormData();
@@ -200,21 +216,25 @@ export default function Home() {
         throw new Error(data.error || 'Erro ao processar PDF');
       }
 
-      setMessages(prev => [...prev, {
+      addMessageToActive(currentConvId, {
+
         id: (Date.now() + 1).toString(),
         role: 'assistant',
         content: data.response || 'Arquivo processado com sucesso!',
         module: 'RAG',
-        timestamp: Date.now()
-      }]);
+        
+timestamp: Date.now()
+});
     } catch (error) {
       console.error('Erro no upload:', error);
-      setMessages(prev => [...prev, {
+      addMessageToActive(currentConvId, {
+
         id: (Date.now() + 1).toString(),
         role: 'error',
         content: error.message || 'Erro ao processar arquivo',
-        timestamp: Date.now()
-      }]);
+        
+timestamp: Date.now()
+});
     } finally {
       setIsUploading(false);
       if (fileInputRef.current) {
@@ -343,7 +363,12 @@ export default function Home() {
         </div>
         
         <div className="flex-1 overflow-y-auto px-3 pb-4">
-          <div className="text-[11px] font-medium text-[#71717a] px-4 py-2 uppercase tracking-wider">Recentes</div>
+          <div className="flex items-center justify-between px-4 py-2">
+            <span className="text-[11px] font-medium text-[#71717a] uppercase tracking-wider">Recentes</span>
+            <button onClick={handleNewConversation} className="p-1 hover:bg-[#262626] rounded text-[#a1a1aa] hover:text-[#10A37F]" title="Nova Conversa">
+              <Plus className="w-3.5 h-3.5" />
+            </button>
+          </div>
           <div className="space-y-1">
             {conversations.map(conv => (
               <button
@@ -357,6 +382,12 @@ export default function Home() {
               >
                 <MessageSquare className="w-4 h-4 shrink-0 opacity-60" />
                 <span className="truncate flex-1">{conv.title}</span>
+                <button 
+                  onClick={(e) => handleDeleteConversation(e, conv.id)}
+                  className="opacity-0 group-hover:opacity-100 p-1 hover:bg-[#3f3f46] rounded transition-all text-[#71717a] hover:text-red-400"
+                >
+                  <Trash2 className="w-3.5 h-3.5" />
+                </button>
               </button>
             ))}
           </div>
