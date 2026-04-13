@@ -43,7 +43,7 @@ export async function callGemini(prompt, history = [], specialistInstruction = n
         const response = await result.response;
         return response.text();
     } catch (error) {
-        console.error("Erro no Gemini:", error);
+        console.error("Erro no Gemini:", error.message, error.stack);
         throw new Error(`Erro na AURA: ${error.message}`);
     }
 }
