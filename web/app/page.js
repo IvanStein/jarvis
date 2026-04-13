@@ -92,18 +92,23 @@ export default function Home() {
       const res = await fetch('/api/history?userId=ivan_stein');
       if (res.ok) {
         const messages = await res.json();
-        if (messages.length > 0) {
-          // No momento as mensagens estão em lista única, vamos agrupar na conversa default
-          setConversations(prev => [{
-            ...prev[0],
-            messages: messages.map(m => ({
-              id: Math.random().toString(),
-              role: m.role,
-              content: m.content,
-              timestamp: Date.now(),
-              module: m.role === 'assistant' ? 'Histórico' : null
-            }))
-          }]);
+        if (Array.isArray(messages) && messages.length > 0) {
+          const mappedMessages = messages.map(m => ({
+            id: Math.random().toString(),
+            role: m.role,
+            content: m.content,
+            timestamp: Date.now(),
+            module: m.role === 'assistant' ? 'Histórico' : null
+          }));
+          
+          setConversations(prev => {
+            const newConversations = [...prev];
+            newConversations[0] = {
+              ...newConversations[0],
+              messages: mappedMessages
+            };
+            return newConversations;
+          });
         }
       }
     } catch (error) {
