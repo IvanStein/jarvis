@@ -656,6 +656,12 @@ timestamp: Date.now()
                         <div className={`w-2 h-2 rounded-full ${process.env.NEXT_PUBLIC_GEMINI_API_KEY ? 'bg-green-500' : 'bg-red-500'}`} />
                       </div>
                     </div>
+                    <div>
+                      <label className="text-xs text-[#71717a] uppercase tracking-wider block mb-2">Supabase Status</label>
+                      <div className="bg-[#0e0e0e] border border-[#27272a] rounded-lg px-3 py-2 text-sm flex items-center justify-between">
+                        <span className="truncate opacity-60 italic">{dashboardData.systemStatus === 'online' ? 'Banco de Dados Sincronizado' : 'Banco de Dados Offline'}</span>
+                        <div className={`w-2 h-2 rounded-full ${dashboardData.systemStatus === 'online' ? 'bg-green-500' : 'bg-red-500'}`} />
+                      </div>
                     </div>
                   </div>
                   <div className="p-3 bg-[#10A37F]/10 border border-[#10A37F]/20 rounded-lg">
