@@ -21,9 +21,6 @@ else:
 
 app = FastAPI(title="Jarvis Backend Gateway")
 
-# Serve static files (HTML, CSS, JS) from root
-app.mount("/static", StaticFiles(directory="."), name="static")
-
 class LoginRequest(BaseModel):
     email: str
     password: str
@@ -34,7 +31,6 @@ async def login(req: LoginRequest):
         raise HTTPException(status_code=500, detail="Supabase connection not configured.")
     
     try:
-        # Tenta autenticar via Supabase Auth
         res = supabase.auth.sign_in_with_password({
             "email": req.email,
             "password": req.password
@@ -48,12 +44,9 @@ async def login(req: LoginRequest):
     except Exception as e:
         raise HTTPException(status_code=401, detail=f"Erro de Autenticação: {str(e)}")
 
-@app.get("/")
-async def root():
-    # Retorna o index.html na raiz para facilitar o deploy na Vercel
-    with open("index.html", "r", encoding="utf-8") as f:
-        from fastapi.responses import HTMLResponse
-        return HTMLResponse(content=f.read())
+# MONTAR ESTÁTICOS NA RAIZ (DEVE SER A ÚLTIMA ROTA)
+# Isso permite que / e /style.css funcionem perfeitamente.
+app.mount("/", StaticFiles(directory=".", html=True), name="static")
 
 if __name__ == "__main__":
     print("🚀 JARVIS COMMAND CENTER: Servidor local iniciado em http://localhost:8000")
