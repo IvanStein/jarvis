@@ -60,6 +60,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (isLoginMode) {
                     console.log('Login success:', data);
                     localStorage.setItem('jarvis_session', data.session);
+                    localStorage.setItem('jarvis_email', document.getElementById('email').value);
                     alert('Acesso concedido! Inicializando Command Center...');
                     window.location.href = '/dashboard.html';
                 } else {

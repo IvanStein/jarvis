@@ -20,16 +20,19 @@
         </div>
         
         <nav class="sidebar-nav">
-            <a href="#" class="nav-item active">
+            <a href="#" class="nav-item active" data-tab="dashboard">
                 <span class="nav-icon">📊</span> Dashboard
             </a>
-            <a href="#" class="nav-item">
+            <a href="#" class="nav-item" data-tab="users">
+                <span class="nav-icon">👥</span> Usuários
+            </a>
+            <a href="#" class="nav-item" data-tab="agents">
                 <span class="nav-icon">🤖</span> Agentes
             </a>
-            <a href="#" class="nav-item">
+            <a href="#" class="nav-item" data-tab="memory">
                 <span class="nav-icon">🧠</span> Memória
             </a>
-            <a href="#" class="nav-item">
+            <a href="#" class="nav-item" data-tab="settings">
                 <span class="nav-icon">⚙️</span> Settings
             </a>
         </nav>
@@ -44,78 +47,71 @@
     </aside>
 
     <main class="main-content">
-        <header class="content-header">
-            <h1 class="headline-lg">Command Center</h1>
-            <div class="system-stats">
-                <div class="stat-pill">
-                    <span class="label-xs text-variant">CPU:</span>
-                    <span class="label-xs text-primary">12%</span>
+        <!-- TAB: DASHBOARD -->
+        <div id="dashboard-tab" class="tab-pane active">
+            <header class="content-header">
+                <h1 class="headline-lg">Command Center</h1>
+                <div class="system-stats">
+                    <div class="stat-pill"><span class="label-xs text-variant">CPU:</span> <span class="label-xs text-primary">12%</span></div>
+                    <div class="stat-pill"><span class="label-xs text-variant">LATENCY:</span> <span class="label-xs text-primary">24ms</span></div>
                 </div>
-                <div class="stat-pill">
-                    <span class="label-xs text-variant">LATENCY:</span>
-                    <span class="label-xs text-primary">24ms</span>
-                </div>
-            </div>
-        </header>
+            </header>
 
-        <section class="dashboard-grid">
-            <div class="card card-wide surface-container">
-                <div class="card-header-inner">
-                    <span class="label-sm text-primary uppercase">Intelligence Feed</span>
-                </div>
-                <div class="activity-list">
-                    <div class="activity-item">
-                        <span class="label-xs text-variant">10:42</span>
-                        <p class="body-sm">Agente 'Orquestrador' sincronizou memória local.</p>
-                    </div>
-                    <div class="activity-item">
-                        <span class="label-xs text-variant">10:45</span>
-                        <p class="body-sm">Nova fonte de conhecimento injetada: YouTube Transcripts.</p>
+            <section class="dashboard-grid">
+                <div class="card card-wide surface-container">
+                    <div class="card-header-inner"><span class="label-sm text-primary uppercase">Intelligence Feed</span></div>
+                    <div class="activity-list">
+                        <div class="activity-item"><span class="label-xs text-variant">10:42</span> <p class="body-sm">Agente 'Orquestrador' sincronizou memória local.</p></div>
+                        <div class="activity-item"><span class="label-xs text-variant">10:45</span> <p class="body-sm">Nova fonte de conhecimento injetada: YouTube Transcripts.</p></div>
                     </div>
                 </div>
-            </div>
+                <div class="card surface-container">
+                    <div class="card-header-inner"><span class="label-sm text-primary uppercase">Active Agents</span></div>
+                    <div class="agent-count"><div class="display-sm text-primary">04</div><span class="label-sm text-variant">OPERANT UNITS</span></div>
+                </div>
+                <div class="card surface-container">
+                    <div class="card-header-inner"><span class="label-sm text-primary uppercase">Token Economy</span></div>
+                    <div class="token-meter">
+                        <div class="meter-bar"><div class="meter-fill" style="width: 42%;"></div></div>
+                        <div class="meter-labels"><span class="label-xs text-variant">4.2k Used</span> <span class="label-xs text-variant">10k Limit</span></div>
+                    </div>
+                </div>
+                <div class="card card-tall card-wide surface-container chat-card">
+                    <div class="card-header-inner border-bottom"><span class="label-sm text-primary uppercase">Terminal Input</span></div>
+                    <div class="chat-display" id="chatDisplay">
+                        <div class="message system"><span class="label-xs text-primary">SYSTEM:</span> <p class="body-md">Aguardando comando...</p></div>
+                    </div>
+                    <div class="chat-input-area">
+                        <input type="text" id="commandInput" placeholder="Execute um comando..." class="terminal-input">
+                        <button class="btn-primary-sm">SEND</button>
+                    </div>
+                </div>
+            </section>
+        </div>
 
-            <div class="card surface-container">
-                <div class="card-header-inner">
-                    <span class="label-sm text-primary uppercase">Active Agents</span>
-                </div>
-                <div class="agent-count">
-                    <div class="display-sm text-primary">04</div>
-                    <span class="label-sm text-variant">OPERANT UNITS</span>
-                </div>
-            </div>
-
-            <div class="card surface-container">
-                <div class="card-header-inner">
-                    <span class="label-sm text-primary uppercase">Token Economy</span>
-                </div>
-                <div class="token-meter">
-                    <div class="meter-bar">
-                        <div class="meter-fill" style="width: 42%;"></div>
-                    </div>
-                    <div class="meter-labels">
-                        <span class="label-xs text-variant">4.2k Used</span>
-                        <span class="label-xs text-variant">10k Limit</span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="card card-tall card-wide surface-container chat-card">
-                <div class="card-header-inner border-bottom">
-                    <span class="label-sm text-primary uppercase">Terminal Input</span>
-                </div>
-                <div class="chat-display" id="chatDisplay">
-                    <div class="message system">
-                        <span class="label-xs text-primary">SYSTEM:</span>
-                        <p class="body-md">Aguardando comando...</p>
-                    </div>
-                </div>
-                <div class="chat-input-area">
-                    <input type="text" id="commandInput" placeholder="Execute um comando ou pergunte algo ao Jarvis..." class="terminal-input">
-                    <button class="btn-primary-sm">SEND</button>
-                </div>
-            </div>
-        </section>
+        <!-- TAB: USERS -->
+        <div id="users-tab" class="tab-pane">
+            <header class="content-header">
+                <h1 class="headline-lg">Gestão de Acesso</h1>
+                <button class="btn-primary-sm" onclick="loadUsers()">ATUALIZAR LISTA</button>
+            </header>
+            
+            <section class="users-grid surface-container">
+                <table class="users-table">
+                    <thead>
+                        <tr>
+                            <th class="label-sm text-variant">EMAIL</th>
+                            <th class="label-sm text-variant">ROLE</th>
+                            <th class="label-sm text-variant">ACESSO</th>
+                            <th class="label-sm text-variant">AÇÕES</th>
+                        </tr>
+                    </thead>
+                    <tbody id="userTableBody">
+                        <!-- Usuários carregados via JS -->
+                    </tbody>
+                </table>
+            </section>
+        </div>
     </main>
 
     <script src="dashboard.js"></script>
