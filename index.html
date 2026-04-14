@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jarvis | Command Center Login</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="surface">
+    <main class="login-container">
+        <div class="logo-area">
+            <img src="jarvis_kinetic_logo_1776164037279.png" alt="Jarvis Logo" class="logo">
+            <h1 class="display-md text-primary bleed-title">JARVIS</h1>
+            <p class="label-md text-variant uppercase tracking-widest">Advanced AI Manager</p>
+        </div>
+
+        <section class="auth-card surface-container">
+            <div class="card-header">
+                <h2 class="headline-lg">Bem-vindo ao Terminal</h2>
+                <p class="body-md text-variant">Insira suas credenciais para acessar o centro de comando.</p>
+            </div>
+
+            <form id="loginForm" class="auth-form">
+                <div class="input-group">
+                    <label for="email" class="label-sm text-primary">IDENTIFICADOR (EMAIL)</label>
+                    <input type="email" id="email" placeholder="nome@exemplo.com" required>
+                </div>
+
+                <div class="input-group">
+                    <label for="password" class="label-sm text-primary">CHAVE DE ACESSO</label>
+                    <input type="password" id="password" placeholder="••••••••" required>
+                </div>
+
+                <button type="submit" class="btn-primary">
+                    <span class="btn-text">INICIAR SESSÃO</span>
+                    <div class="shimmer"></div>
+                </button>
+            </form>
+
+            <div class="card-footer">
+                <button class="btn-ghost">
+                    <img src="https://www.google.com/favicon.ico" alt="Google" class="icon-sm">
+                    ENTRAR COM O GOOGLE
+                </button>
+            </div>
+        </section>
+
+        <footer class="app-footer">
+            <p class="label-sm text-variant">KINETIC ENGINE V1.0 | ENCRYPTED SESSION</p>
+        </footer>
+    </main>
+
+    <script src="auth.js"></script>
+</body>
+</html>
