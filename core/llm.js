@@ -5,13 +5,13 @@ import { z } from "zod";
 let genAI;
 
 export function getModelInstance(customInstruction = null, overrideApiKey = null) {
-    const apiKey = (overrideApiKey || process.env.GEMINI_API_KEY)?.trim()?.replace(/^["']|["']$/g, '');
+    let apiKey = (overrideApiKey || process.env.GEMINI_API_KEY || "").toString().trim().replace(/^["']|["']$/g, '');
     
-    if (!apiKey) {
-        throw new Error("Configuração da API Gemini pendente.");
+    if (!apiKey || apiKey === "undefined") {
+        throw new Error("Configuração da API Gemini pendente. Por favor, cole uma chave válida no Dashboard.");
     }
 
-    // Cria nova instância se a chave for diferente da atual
+    // Cria nova instância com a chave limpa
     const currentGenAI = new GoogleGenerativeAI(apiKey);
 
     const baseInstruction = `Você é AURA, um sistema inteligente com personalidade JARVIS.
@@ -19,7 +19,13 @@ FOCO ATUAL: ${customInstruction || "Gestão Geral e Auxílio ao Ivan Stein"}.
 REGRAS: Seja conciso, técnico e sofisticado.`;
 
     return currentGenAI.getGenerativeModel({ 
-        model: "gemini-2.5-flash-lite",
+        model: "gemini-1.5-flash",
+        generationConfig: {
+            temperature: 1,
+            topP: 0.95,
+            topK: 40,
+            maxOutputTokens: 8192,
+        },
         systemInstruction: baseInstruction
     });
 }
