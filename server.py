@@ -46,24 +46,67 @@ async def login(req: LoginRequest):
 
 @app.post("/api/register")
 async def register(req: LoginRequest):
-    if not supabase:
-        raise HTTPException(status_code=500, detail="Supabase connection not configured.")
+    SERVICE_KEY = os.getenv("SUPABASE_SERVICE_ROLE_KEY")
+    if not SUPABASE_URL or not SERVICE_KEY:
+        raise HTTPException(status_code=500, detail="Service Role Key não configurada.")
+    
+    admin_supabase = create_client(SUPABASE_URL, SERVICE_KEY)
     
     try:
-        res = supabase.auth.sign_up({
+        res = admin_supabase.auth.admin.create_user({
             "email": req.email,
-            "password": req.password
+            "password": req.password,
+            "email_confirm": True,
+            "user_metadata": {"role": "member", "access": ["dashboard"]}
         })
         
-        # Se o Supabase estiver configurado para auto-confirmar ou não exigir confirmação
-        # ele já retorna o usuário. Se exigir email de confirmação, o login imediato pode falhar.
         return {
             "status": "success", 
-            "message": "Usuário criado com sucesso. Verifique seu e-mail se necessário.",
-            "user_id": res.user.id if res.user else None
+            "message": "Usuário criado e confirmado com sucesso!",
+            "user_id": res.user.id
         }
     except Exception as e:
-        raise HTTPException(status_code=400, detail=f"Erro no Cadastro: {str(e)}")
+        raise HTTPException(status_code=400, detail=f"Erro no Cadastro Admin: {str(e)}")
+
+@app.get("/api/users")
+async def list_users():
+    SERVICE_KEY = os.getenv("SUPABASE_SERVICE_ROLE_KEY")
+    admin_supabase = create_client(SUPABASE_URL, SERVICE_KEY)
+    
+    try:
+        # Lista todos os usuários (limite de 50 para teste)
+        res = admin_supabase.auth.admin.list_users()
+        users_data = []
+        for user in res:
+            users_data.append({
+                "id": user.id,
+                "email": user.email,
+                "last_login": user.last_sign_in_at,
+                "role": user.user_metadata.get("role", "member"),
+                "access": user.user_metadata.get("access", ["dashboard"])
+            })
+        return users_data
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Erro ao listar usuários: {str(e)}")
+
+class PermissionUpdate(BaseModel):
+    user_id: str
+    role: str
+    access: list[str]
+
+@app.post("/api/users/update")
+async def update_user_permissions(req: PermissionUpdate):
+    SERVICE_KEY = os.getenv("SUPABASE_SERVICE_ROLE_KEY")
+    admin_supabase = create_client(SUPABASE_URL, SERVICE_KEY)
+    
+    try:
+        admin_supabase.auth.admin.update_user_by_id(
+            req.user_id,
+            {"user_metadata": {"role": req.role, "access": req.access}}
+        )
+        return {"status": "success", "message": "Permissões atualizadas."}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Erro ao atualizar: {str(e)}")
 
 # MONTAR ESTÁTICOS NA RAIZ (DEVE SER A ÚLTIMA ROTA)
 # Isso permite que / e /style.css funcionem perfeitamente.

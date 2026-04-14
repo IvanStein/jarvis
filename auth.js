@@ -61,7 +61,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     console.log('Login success:', data);
                     localStorage.setItem('jarvis_session', data.session);
                     alert('Acesso concedido! Inicializando Command Center...');
-                    // window.location.href = '/dashboard.html';
+                    window.location.href = '/dashboard.html';
                 } else {
                     alert('Cadastro realizado! Agora você pode entrar no sistema.');
                     // Switch back to login mode automatically

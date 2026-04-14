@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jarvis | Command Center</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="dashboard.css">
+</head>
+<body class="surface dashboard-body">
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <svg viewBox="0 0 100 100" class="logo-sm">
+                <path d="M30 20 L70 20 L70 30 L55 30 L55 80 L45 80 L45 30 L30 30 Z" fill="none" stroke="#8eff71" stroke-width="4"/>
+            </svg>
+            <span class="label-md text-primary tracking-widest uppercase">Jarvis v1.0</span>
+        </div>
+        
+        <nav class="sidebar-nav">
+            <a href="#" class="nav-item active">
+                <span class="nav-icon">📊</span> Dashboard
+            </a>
+            <a href="#" class="nav-item">
+                <span class="nav-icon">🤖</span> Agentes
+            </a>
+            <a href="#" class="nav-item">
+                <span class="nav-icon">🧠</span> Memória
+            </a>
+            <a href="#" class="nav-item">
+                <span class="nav-icon">⚙️</span> Settings
+            </a>
+        </nav>
+
+        <div class="sidebar-footer">
+            <div class="user-status">
+                <div class="status-dot"></div>
+                <span class="label-sm text-variant" id="userEmail">USER_OFFLINE</span>
+            </div>
+            <button id="logoutBtn" class="btn-ghost-sm">LOGOUT</button>
+        </div>
+    </aside>
+
+    <main class="main-content">
+        <header class="content-header">
+            <h1 class="headline-lg">Command Center</h1>
+            <div class="system-stats">
+                <div class="stat-pill">
+                    <span class="label-xs text-variant">CPU:</span>
+                    <span class="label-xs text-primary">12%</span>
+                </div>
+                <div class="stat-pill">
+                    <span class="label-xs text-variant">LATENCY:</span>
+                    <span class="label-xs text-primary">24ms</span>
+                </div>
+            </div>
+        </header>
+
+        <section class="dashboard-grid">
+            <div class="card card-wide surface-container">
+                <div class="card-header-inner">
+                    <span class="label-sm text-primary uppercase">Intelligence Feed</span>
+                </div>
+                <div class="activity-list">
+                    <div class="activity-item">
+                        <span class="label-xs text-variant">10:42</span>
+                        <p class="body-sm">Agente 'Orquestrador' sincronizou memória local.</p>
+                    </div>
+                    <div class="activity-item">
+                        <span class="label-xs text-variant">10:45</span>
+                        <p class="body-sm">Nova fonte de conhecimento injetada: YouTube Transcripts.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card surface-container">
+                <div class="card-header-inner">
+                    <span class="label-sm text-primary uppercase">Active Agents</span>
+                </div>
+                <div class="agent-count">
+                    <div class="display-sm text-primary">04</div>
+                    <span class="label-sm text-variant">OPERANT UNITS</span>
+                </div>
+            </div>
+
+            <div class="card surface-container">
+                <div class="card-header-inner">
+                    <span class="label-sm text-primary uppercase">Token Economy</span>
+                </div>
+                <div class="token-meter">
+                    <div class="meter-bar">
+                        <div class="meter-fill" style="width: 42%;"></div>
+                    </div>
+                    <div class="meter-labels">
+                        <span class="label-xs text-variant">4.2k Used</span>
+                        <span class="label-xs text-variant">10k Limit</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card card-tall card-wide surface-container chat-card">
+                <div class="card-header-inner border-bottom">
+                    <span class="label-sm text-primary uppercase">Terminal Input</span>
+                </div>
+                <div class="chat-display" id="chatDisplay">
+                    <div class="message system">
+                        <span class="label-xs text-primary">SYSTEM:</span>
+                        <p class="body-md">Aguardando comando...</p>
+                    </div>
+                </div>
+                <div class="chat-input-area">
+                    <input type="text" id="commandInput" placeholder="Execute um comando ou pergunte algo ao Jarvis..." class="terminal-input">
+                    <button class="btn-primary-sm">SEND</button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script src="dashboard.js"></script>
+</body>
+</html>
