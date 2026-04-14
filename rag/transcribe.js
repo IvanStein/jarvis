@@ -5,16 +5,19 @@ import ytdl from '@distube/ytdl-core';
 import { GoogleAIFileManager } from "@google/generative-ai/server";
 import { callGemini } from '../core/llm.js';
 
+import os from 'os';
+
 /**
  * Baixa o áudio de um vídeo, transcreve usando Gemini e gera insights.
  */
 export async function transcribeAdvanced(url, userId) {
-    const TmpPath = path.join(process.cwd(), 'tmp');
-    if (!fs.existsSync(TmpPath)) {
-        fs.mkdirSync(TmpPath, { recursive: true });
-    }
+    const TmpPath = os.tmpdir();
     
-    const videoId = url.split('v=')[1]?.split('&')[0] || Date.now().toString();
+    // Tratamento robusto para extrair ID do vídeo longo formato ou curto formato (youtu.be)
+    let videoId = Date.now().toString();
+    if (url.includes('v=')) videoId = url.split('v=')[1]?.split('&')[0];
+    else if (url.includes('youtu.be/')) videoId = url.split('youtu.be/')[1]?.split('?')[0];
+    
     const filePath = path.join(TmpPath, `${videoId}.mp3`);
 
     console.log(`[TRANSCREVER] Iniciando processo para: ${url}`);
