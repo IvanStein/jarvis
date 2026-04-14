@@ -9,7 +9,7 @@
 Antigravity Kit is a modular system consisting of:
 
 - **20 Specialist Agents** - Role-based AI personas
-- **39 Skills** - Domain-specific knowledge modules
+- **41 Skills** - Domain-specific knowledge modules
 - **11 Workflows** - Slash command procedures
 
 ---
@@ -57,7 +57,7 @@ Specialist AI personas for different domains.
 
 ---
 
-## 🧩 Skills (39)
+## 🧩 Skills (41)
 
 Modular knowledge domains that agents can load on-demand. based on task context.
 
@@ -86,6 +86,7 @@ Modular knowledge domains that agents can load on-demand. based on task context.
 | ----------------- | --------------------------- |
 | `database-design` | Schema design, optimization |
 | `prisma-expert`   | Prisma ORM, migrations      |
+| `supabase-expert` | Supabase, RLS, @supabase/ssr|
 
 ### TypeScript/JavaScript
 
@@ -100,6 +101,7 @@ Modular knowledge domains that agents can load on-demand. based on task context.
 | `docker-expert`         | Containerization, Compose |
 | `deployment-procedures` | CI/CD, deploy workflows   |
 | `server-management`     | Infrastructure management |
+| `vercel-deploy`         | Next.js on Vercel Network |
 
 ### Testing & Quality
 
@@ -270,7 +272,7 @@ For details, see [scripts/README.md](scripts/README.md)
 | Metric              | Value                         |
 | ------------------- | ----------------------------- |
 | **Total Agents**    | 20                            |
-| **Total Skills**    | 39                            |
+| **Total Skills**    | 41                            |
 | **Total Workflows** | 11                            |
 | **Total Scripts**   | 2 (master) + 18 (skill-level) |
 | **Coverage**        | ~90% web/mobile development   |
