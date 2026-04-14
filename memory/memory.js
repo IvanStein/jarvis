@@ -54,6 +54,42 @@ export async function getLastMessages(userId, limit = 10, conversationId = 'defa
         return [];
     }
 }
+
+/**
+ * Recupera a lista de conversas únicas de um usuário.
+ */
+export async function getConversations(userId) {
+    const supabase = getSupabase();
+    if (!supabase) return [];
+    try {
+        const { data, error } = await supabase
+            .from('chat_messages')
+            .select('conversation_id, content, created_at')
+            .eq('user_id', userId)
+            .eq('role', 'user')
+            .order('created_at', { ascending: false });
+
+        if (error) return [];
+        
+        // Pega apenas a primeira mensagem de cada conversa para ser o título
+        const convs = {};
+        data.forEach(msg => {
+            if (!convs[msg.conversation_id]) {
+                convs[msg.conversation_id] = {
+                    id: msg.conversation_id,
+                    title: msg.content.substring(0, 30) + '...',
+                    date: new Date(msg.created_at).toLocaleDateString(),
+                    messages: []
+                };
+            }
+        });
+        return Object.values(convs);
+    } catch (error) {
+        console.error("Erro ao buscar conversas no Supabase:", error);
+        return [];
+    }
+}
+
 /**
  * Salva um fato importante aprendido sobre o usuário.
  */

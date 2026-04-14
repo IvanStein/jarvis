@@ -85,11 +85,10 @@ export default function Home() {
     const savedKey = localStorage.getItem('jarvis_api_key');
     if (savedKey) setLocalApiKey(savedKey);
     
-    fetchHistory();
-    if (activeTab === 'dashboard') {
-      fetchDashboard();
-    }
-  }, [activeTab]);
+    fetchConversations();
+    if (activeConversationId) fetchHistory();
+    if (activeTab === 'dashboard') fetchDashboard();
+  }, [activeTab, activeConversationId]);
 
   useEffect(() => {
     if (localApiKey) {
@@ -98,6 +97,30 @@ export default function Home() {
       localStorage.removeItem('jarvis_api_key');
     }
   }, [localApiKey]);
+
+  const fetchConversations = async () => {
+    try {
+      const res = await fetch(`/api/conversations?userId=ivan_stein`);
+      if (res.ok) {
+        const data = await res.json();
+        if (data.length > 0) {
+          setConversations(prev => {
+            // Preserva conversas novas (sem id numérico/timestamp longo) que ainda não foram salvas
+            const localOnly = prev.filter(p => !data.find(d => d.id === p.id));
+            const merged = [...localOnly, ...data];
+            // Ordenamos para que a recém criada (id maior/mais recente) fique no topo, se for numérico
+            return merged.sort((a,b) => b.id.localeCompare(a.id));
+          });
+          // Se a conversa ativa não existir na lista, pega a primeira
+          if (!data.find(c => c.id === activeConversationId) && !conversations.find(c => c.id === activeConversationId)) {
+            setActiveConversationId(data[0].id);
+          }
+        }
+      }
+    } catch (e) {
+      console.error('Erro ao buscar conversas:', e);
+    }
+  };
 
   const fetchHistory = async () => {
     try {
@@ -117,13 +140,10 @@ export default function Home() {
             const newConversations = [...prev];
             const index = newConversations.findIndex(c => c.id === activeConversationId);
             if (index !== -1) {
-              const currentMessages = newConversations[index].messages;
-              
-              // Se o histórico for igual à memória atual, não faz nada
+              const currentMessages = newConversations[index].messages || [];
               if (JSON.stringify(currentMessages) === JSON.stringify(mappedMessages)) {
                 return prev;
               }
-
               newConversations[index] = {
                 ...newConversations[index],
                 messages: mappedMessages.length > 0 ? mappedMessages : currentMessages
@@ -137,10 +157,6 @@ export default function Home() {
       console.error('Erro ao carregar histórico:', error);
     }
   };
-
-  useEffect(() => {
-    fetchHistory();
-  }, [activeConversationId]);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });

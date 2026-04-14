@@ -42,16 +42,25 @@ export async function runAgent(userInput, userId, conversationId = 'default', ov
     const dbConfig = await getSpecialistConfig(specialistKey);
     const specialistInstructions = dbConfig ? dbConfig.instruction : (SPECIALISTS[specialistKey]?.instruction || "Agindo como Jarvis (Geral)");
 
-    // 4. Buscar memórias e histórico
+    // 4. Buscar memórias e histórico (antes de salvar a nova mensagem do usuário)
     const userFacts = await getUserFacts(userId);
     const recentHistory = await getLastMessages(userId, 5, conversationId);
     
+    // Salva a mensagem do usuário antes de chamar a API (se a API falhar, não perdemos o input)
+    const userSave = await saveMessage(userId, 'user', userInput, conversationId);
+    if (userSave?.error) console.error("[CRITICAL] Falha ao salvar user msg:", userSave.error);
+
     // 5. Chamada ao LLM
     const contextPrefix = userFacts ? `[MEMÓRIA DE IVAN: ${userFacts}]\n` : "";
     const responseText = await callGemini(userInput, recentHistory, `${specialistInstructions}\n${contextPrefix}`, null, overrideApiKey);
     
-    await saveMessage(userId, 'user', userInput, conversationId);
-    await saveMessage(userId, 'assistant', responseText, conversationId);
+    // Salva a resposta da IA
+    const asstSave = await saveMessage(userId, 'assistant', responseText, conversationId);
+    if (asstSave?.error) console.error("[CRITICAL] Falha ao salvar asst msg:", asstSave.error);
     
-    return { response: responseText, module: dbConfig ? dbConfig.name : (specialistKey || "Jarvis") };
+    return { 
+        response: responseText, 
+        module: dbConfig ? dbConfig.name : (specialistKey || "Jarvis"),
+        dbError: userSave?.error || asstSave?.error 
+    };
 }
