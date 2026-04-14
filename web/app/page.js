@@ -49,6 +49,7 @@ export default function Home() {
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const [newSpecialist, setNewSpecialist] = useState({ name: '', description: '', instruction: '' });
+  const [localApiKey, setLocalApiKey] = useState('');
   const fileInputRef = useRef(null);
   const messagesEndRef = useRef(null);
   const textareaRef = useRef(null);
@@ -184,7 +185,8 @@ export default function Home() {
         body: JSON.stringify({ 
           message: text, 
           userId: 'ivan_stein',
-          conversationId: activeConversationId
+          conversationId: activeConversationId,
+          apiKey: localApiKey // Envia a chave manual se existir
         }),
       });
       
@@ -637,37 +639,39 @@ timestamp: Date.now()
                   Configuração do Núcleo (Ambiente)
                 </h2>
                 <div className="bg-[#1f1f22] rounded-xl border border-[#27272a] p-6 space-y-4">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div>
-                      <div className="flex items-center justify-between mb-2">
-                        <label className="text-xs text-[#71717a] uppercase tracking-wider block">Gemini API Key</label>
-                        <a 
-                          href="https://aistudio.google.com/app/apikey" 
-                          target="_blank" 
-                          rel="noopener noreferrer"
-                          className="text-[10px] text-[#10A37F] hover:underline flex items-center gap-1 font-bold"
+                  <div>
+                    <div className="flex items-center justify-between mb-2">
+                      <label className="text-xs text-[#71717a] uppercase tracking-wider block font-bold">GEMINI API KEY (EDITÁVEL)</label>
+                      <a 
+                        href="https://aistudio.google.com/app/apikey" 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="text-[10px] text-[#10A37F] hover:underline flex items-center gap-1 font-bold"
+                      >
+                        <PlaySquare className="w-3 h-3" />
+                        OBTER CHAVE
+                      </a>
+                    </div>
+                    <div className="flex gap-2">
+                      <input 
+                        type="password"
+                        value={localApiKey}
+                        onChange={(e) => setLocalApiKey(e.target.value)}
+                        placeholder="Cole aqui sua nova chave Gemini..."
+                        className="flex-1 bg-[#0e0e0e] border border-[#27272a] rounded-lg px-4 py-3 text-sm font-mono focus:outline-none focus:border-[#10A37F] text-white underline-offset-4"
+                      />
+                      {localApiKey && (
+                        <button 
+                          onClick={() => setLocalApiKey('')}
+                          className="px-3 bg-[#262626] hover:bg-red-900/20 text-[#71717a] hover:text-red-500 rounded-lg border border-[#27272a] transition-colors"
+                          title="Limpar chave"
                         >
-                          <PlaySquare className="w-3 h-3" />
-                          OBTER CHAVE
-                        </a>
-                      </div>
-                      <div className="bg-[#0e0e0e] border border-[#27272a] rounded-lg px-3 py-2 text-sm flex items-center justify-between font-mono">
-                        <span className="truncate opacity-60">AIzaSy...{process.env.NEXT_PUBLIC_GEMINI_API_KEY ? 'CONECTADO' : 'PENDENTE'}</span>
-                        <div className={`w-2 h-2 rounded-full ${process.env.NEXT_PUBLIC_GEMINI_API_KEY ? 'bg-green-500' : 'bg-red-500'}`} />
-                      </div>
+                          <X className="w-4 h-4" />
+                        </button>
+                      )}
                     </div>
-                    <div>
-                      <label className="text-xs text-[#71717a] uppercase tracking-wider block mb-2">Supabase Status</label>
-                      <div className="bg-[#0e0e0e] border border-[#27272a] rounded-lg px-3 py-2 text-sm flex items-center justify-between">
-                        <span className="truncate opacity-60 italic">{dashboardData.systemStatus === 'online' ? 'Banco de Dados Sincronizado' : 'Banco de Dados Offline'}</span>
-                        <div className={`w-2 h-2 rounded-full ${dashboardData.systemStatus === 'online' ? 'bg-green-500' : 'bg-red-500'}`} />
-                      </div>
-                    </div>
-                  </div>
-                  <div className="p-3 bg-[#10A37F]/10 border border-[#10A37F]/20 rounded-lg">
-                    <p className="text-[11px] text-[#a1a1aa] leading-relaxed">
-                      <span className="text-[#10A37F] font-bold">INFO:</span> As chaves de servidor (Supabase Key) não são exibidas por segurança. 
-                      Para alterar as chaves na Vercel, acesse <code className="bg-[#262626] px-1 rounded">Settings &gt; Environment Variables</code> no painel do projeto e realize um novo deploy.
+                    <p className="mt-2 text-[10px] text-[#71717a] italic">
+                      Chave salva localmente. Prioridade máxima sobre a configuração da Vercel.
                     </p>
                   </div>
                 </div>

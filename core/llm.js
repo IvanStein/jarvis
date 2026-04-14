@@ -4,30 +4,31 @@ import { z } from "zod";
 
 let genAI;
 
-export function getModelInstance(customInstruction = null) {
-    const apiKey = process.env.GEMINI_API_KEY?.trim()?.replace(/^["']|["']$/g, '');
+export function getModelInstance(customInstruction = null, overrideApiKey = null) {
+    const apiKey = (overrideApiKey || process.env.GEMINI_API_KEY)?.trim()?.replace(/^["']|["']$/g, '');
     
     if (!apiKey) {
         throw new Error("Configuração da API Gemini pendente.");
     }
 
-    if (!genAI) genAI = new GoogleGenerativeAI(apiKey);
+    // Cria nova instância se a chave for diferente da atual
+    const currentGenAI = new GoogleGenerativeAI(apiKey);
 
     const baseInstruction = `Você é AURA, um sistema inteligente com personalidade JARVIS.
 FOCO ATUAL: ${customInstruction || "Gestão Geral e Auxílio ao Ivan Stein"}.
 REGRAS: Seja conciso, técnico e sofisticado.`;
 
-    return genAI.getGenerativeModel({ 
+    return currentGenAI.getGenerativeModel({ 
         model: "gemini-2.5-flash-lite",
         systemInstruction: baseInstruction
     });
 }
 
 /**
- * Chama o Gemini com suporte a especialistas e arquivos.
+ * Chama o Gemini com suporte a especialistas e chaves manuais.
  */
-export async function callGemini(prompt, history = [], specialistInstruction = null, fileData = null) {
-    const activeModel = getModelInstance(specialistInstruction);
+export async function callGemini(prompt, history = [], specialistInstruction = null, fileData = null, overrideApiKey = null) {
+    const activeModel = getModelInstance(specialistInstruction, overrideApiKey);
 
     try {
         const validatedPrompt = z.string().min(1).parse(prompt);
