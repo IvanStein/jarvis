@@ -42,6 +42,21 @@ export async function runAgent(userInput, userId, conversationId = 'default', ov
     const dbConfig = await getSpecialistConfig(specialistKey);
     const specialistInstructions = dbConfig ? dbConfig.instruction : (SPECIALISTS[specialistKey]?.instruction || "Agindo como Jarvis (Geral)");
 
+    // [NOVO] DETECÇÃO DE FATOS (Memória de Longo Prazo Orgânica)
+    try {
+        const factPrompt = `Analise a frase do usuário. Se ele estiver informando um dado pessoal permanente ou importante sobre si mesmo (ex: data de nascimento, nome, profissão, gostos), resuma isso em uma frase curta (Ex: "O usuário nasceu em 10/10/1990"). Se NÃO houver dado pessoal permanente, responda EXATAMENTE com a palavra "NENHUM".\n\nFrase: "${userInput}"`;
+        const factCheck = await callGemini(factPrompt, [], "Você é um analisador de dados de memória.", null, overrideApiKey);
+        const factResult = factCheck?.trim() || "NENHUM";
+        
+        if (factResult && !factResult.toUpperCase().includes("NENHUM") && factResult.length > 5) {
+            const { saveFact } = await import('../memory/memory.js');
+            await saveFact(userId, factResult);
+            console.log(`[MEMÓRIA] Dado permanente aprendido: ${factResult}`);
+        }
+    } catch(e) {
+        console.warn("[MEMÓRIA] Falha na extração de fatos orgânica:", e.message);
+    }
+
     // 4. Buscar memórias e histórico (antes de salvar a nova mensagem do usuário)
     const userFacts = await getUserFacts(userId);
     const recentHistory = await getLastMessages(userId, 5, conversationId);
