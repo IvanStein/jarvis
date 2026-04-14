@@ -1,17 +1,24 @@
-/* Dashboard Specific Styles */
+.dashboard-body {
+    display: flex !important;
+    justify-content: flex-start !important;
+    align-items: stretch !important;
+    height: 100dvh;
+    width: 100vw;
+    overflow: hidden;
+    background-color: var(--surface);
+}
 
 .tab-pane {
     display: none;
     flex-direction: column;
     gap: 2rem;
     width: 100%;
+    height: 100%;
 }
 
 .tab-pane.active {
     display: flex;
 }
-
-/* Sidebar */
 .sidebar {
     width: 260px;
     background-color: var(--surface-container-low);
@@ -230,6 +237,16 @@
 .terminal-input {
     flex: 1;
     background-color: var(--surface-container-low) !important;
+}
+
+.btn-primary-sm {
+    background: var(--primary);
+    color: var(--on-primary);
+    border: none;
+    padding: 0 20px;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    font-weight: 700;
 }
 
 /* Users Table */
