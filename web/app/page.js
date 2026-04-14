@@ -82,11 +82,22 @@ export default function Home() {
   const messages = activeConversation?.messages || [];
 
   useEffect(() => {
+    const savedKey = localStorage.getItem('jarvis_api_key');
+    if (savedKey) setLocalApiKey(savedKey);
+    
     fetchHistory();
     if (activeTab === 'dashboard') {
       fetchDashboard();
     }
   }, [activeTab]);
+
+  useEffect(() => {
+    if (localApiKey) {
+      localStorage.setItem('jarvis_api_key', localApiKey);
+    } else {
+      localStorage.removeItem('jarvis_api_key');
+    }
+  }, [localApiKey]);
 
   const fetchHistory = async () => {
     try {
@@ -658,7 +669,9 @@ timestamp: Date.now()
                         value={localApiKey}
                         onChange={(e) => setLocalApiKey(e.target.value)}
                         placeholder="Cole aqui sua nova chave Gemini..."
-                        className="flex-1 bg-[#0e0e0e] border border-[#27272a] rounded-lg px-4 py-3 text-sm font-mono focus:outline-none focus:border-[#10A37F] text-white underline-offset-4"
+                        className={`flex-1 bg-[#0e0e0e] border rounded-lg px-4 py-3 text-sm font-mono focus:outline-none text-white underline-offset-4 ${
+                          localApiKey ? 'border-[#10A37F]' : 'border-[#27272a]'
+                        }`}
                       />
                       {localApiKey && (
                         <button 
@@ -670,9 +683,11 @@ timestamp: Date.now()
                         </button>
                       )}
                     </div>
-                    <p className="mt-2 text-[10px] text-[#71717a] italic">
-                      Chave salva localmente. Prioridade máxima sobre a configuração da Vercel.
-                    </p>
+                    {localApiKey && (
+                      <p className="mt-2 text-[10px] text-[#10A37F] font-bold animate-pulse">
+                        SISTEMA USANDO CHAVE MANUAL ATIVA
+                      </p>
+                    )}
                   </div>
                 </div>
               </div>
