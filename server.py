@@ -44,6 +44,27 @@ async def login(req: LoginRequest):
     except Exception as e:
         raise HTTPException(status_code=401, detail=f"Erro de Autenticação: {str(e)}")
 
+@app.post("/api/register")
+async def register(req: LoginRequest):
+    if not supabase:
+        raise HTTPException(status_code=500, detail="Supabase connection not configured.")
+    
+    try:
+        res = supabase.auth.sign_up({
+            "email": req.email,
+            "password": req.password
+        })
+        
+        # Se o Supabase estiver configurado para auto-confirmar ou não exigir confirmação
+        # ele já retorna o usuário. Se exigir email de confirmação, o login imediato pode falhar.
+        return {
+            "status": "success", 
+            "message": "Usuário criado com sucesso. Verifique seu e-mail se necessário.",
+            "user_id": res.user.id if res.user else None
+        }
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=f"Erro no Cadastro: {str(e)}")
+
 # MONTAR ESTÁTICOS NA RAIZ (DEVE SER A ÚLTIMA ROTA)
 # Isso permite que / e /style.css funcionem perfeitamente.
 app.mount("/", StaticFiles(directory=".", html=True), name="static")
