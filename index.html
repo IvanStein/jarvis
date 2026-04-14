@@ -10,48 +10,54 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body class="surface">
-    <main class="login-container">
-        <div class="logo-area">
-            <img src="jarvis_kinetic_logo_1776164037279.png" alt="Jarvis Logo" class="logo">
-            <h1 class="display-md text-primary bleed-title">JARVIS</h1>
-            <p class="label-md text-variant uppercase tracking-widest">Advanced AI Manager</p>
-        </div>
-
-        <section class="auth-card surface-container">
-            <div class="card-header">
-                <h2 class="headline-lg">Bem-vindo ao Terminal</h2>
-                <p class="body-md text-variant">Insira suas credenciais para acessar o centro de comando.</p>
+    <div class="login-wrapper">
+        <main class="login-container">
+            <div class="logo-area">
+                <svg viewBox="0 0 100 100" class="logo-svg">
+                    <path d="M30 20 L70 20 L70 30 L55 30 L55 80 L45 80 L45 30 L30 30 Z" fill="none" stroke="#8eff71" stroke-width="4"/>
+                    <path d="M35 25 L65 25 L65 30 L50 30 L50 75 L35 75 Z" fill="#8eff71" opacity="0.2"/>
+                    <circle cx="50" cy="50" r="45" stroke="#8eff71" stroke-width="1" fill="none" opacity="0.1"/>
+                </svg>
+                <h1 class="display-md text-primary bleed-title">JARVIS</h1>
+                <p class="label-md text-variant uppercase tracking-widest">Advanced AI Manager</p>
             </div>
 
-            <form id="loginForm" class="auth-form">
-                <div class="input-group">
-                    <label for="email" class="label-sm text-primary">IDENTIFICADOR (EMAIL)</label>
-                    <input type="email" id="email" placeholder="nome@exemplo.com" required>
+            <section class="auth-card surface-container">
+                <div class="card-header">
+                    <h2 class="headline-lg">Terminal</h2>
+                    <p class="body-md text-variant">Insira suas credenciais para acessar o centro de comando.</p>
                 </div>
 
-                <div class="input-group">
-                    <label for="password" class="label-sm text-primary">CHAVE DE ACESSO</label>
-                    <input type="password" id="password" placeholder="••••••••" required>
+                <form id="loginForm" class="auth-form">
+                    <div class="input-group">
+                        <label for="email" class="label-sm text-primary">IDENTIFICADOR (EMAIL)</label>
+                        <input type="email" id="email" placeholder="nome@exemplo.com" required>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="password" class="label-sm text-primary">CHAVE DE ACESSO</label>
+                        <input type="password" id="password" placeholder="••••••••" required>
+                    </div>
+
+                    <button type="submit" class="btn-primary">
+                        <span class="btn-text">INICIAR SESSÃO</span>
+                        <div class="shimmer"></div>
+                    </button>
+                </form>
+
+                <div class="card-footer">
+                    <button class="btn-ghost">
+                        <img src="https://www.google.com/favicon.ico" alt="Google" class="icon-sm">
+                        ENTRAR COM O GOOGLE
+                    </button>
                 </div>
+            </section>
 
-                <button type="submit" class="btn-primary">
-                    <span class="btn-text">INICIAR SESSÃO</span>
-                    <div class="shimmer"></div>
-                </button>
-            </form>
-
-            <div class="card-footer">
-                <button class="btn-ghost">
-                    <img src="https://www.google.com/favicon.ico" alt="Google" class="icon-sm">
-                    ENTRAR COM O GOOGLE
-                </button>
-            </div>
-        </section>
-
-        <footer class="app-footer">
-            <p class="label-sm text-variant">KINETIC ENGINE V1.0 | ENCRYPTED SESSION</p>
-        </footer>
-    </main>
+            <footer class="app-footer">
+                <p class="label-sm text-variant">KINETIC ENGINE V1.0 | SESSION SECURED</p>
+            </footer>
+        </main>
+    </div>
 
     <script src="auth.js"></script>
 </body>

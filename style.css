@@ -26,11 +26,16 @@ body {
     background-color: var(--surface);
     color: var(--text-main);
     font-family: 'Inter', sans-serif;
-    min-height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    overflow: hidden;
+    min-height: 100dvh;
+    margin: 0;
+    overflow-x: hidden;
+}
+
+.login-wrapper {
+    display: grid;
+    place-items: center;
+    min-height: 100dvh;
+    padding: 2rem 1rem;
 }
 
 /* Typography */
@@ -61,11 +66,10 @@ body {
 .login-container {
     width: 100%;
     max-width: 440px;
-    padding: 2rem;
     text-align: center;
     display: flex;
     flex-direction: column;
-    gap: 3rem;
+    gap: 2rem;
     animation: fadeIn 0.8s ease-out;
 }
 
@@ -80,10 +84,10 @@ body {
     align-items: center;
 }
 
-.logo {
-    width: 80px;
-    height: 80px;
-    margin-bottom: 1.5rem;
+.logo-svg {
+    width: 64px;
+    height: 64px;
+    margin-bottom: 1rem;
     filter: drop-shadow(0 0 10px var(--primary-dim));
 }
 
