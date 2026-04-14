@@ -108,6 +108,16 @@ async def update_user_permissions(req: PermissionUpdate):
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Erro ao atualizar: {str(e)}")
 
+@app.get("/api/history")
+async def get_history():
+    # Por enquanto, retorna um histórico simulado para evitar erros de log
+    # Em breve conectaremos ao banco de dados Supabase
+    return [
+        {"role": "system", "content": "Sistema Jarvis Inicializado."},
+        {"role": "user", "content": "Olá Jarvis."},
+        {"role": "assistant", "content": "Bem-vindo ao Command Center. Como posso ajudar hoje?"}
+    ]
+
 # MONTAR ESTÁTICOS NA RAIZ (DEVE SER A ÚLTIMA ROTA)
 # Isso permite que / e /style.css funcionem perfeitamente.
 app.mount("/", StaticFiles(directory=".", html=True), name="static")
