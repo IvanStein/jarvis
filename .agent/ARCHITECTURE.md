@@ -9,7 +9,7 @@
 Antigravity Kit is a modular system consisting of:
 
 - **20 Specialist Agents** - Role-based AI personas
-- **41 Skills** - Domain-specific knowledge modules
+- **44 Skills** - Domain-specific knowledge modules
 - **11 Workflows** - Slash command procedures
 
 ---
@@ -57,7 +57,7 @@ Specialist AI personas for different domains.
 
 ---
 
-## 🧩 Skills (41)
+## 🧩 Skills (44)
 
 Modular knowledge domains that agents can load on-demand. based on task context.
 
@@ -70,6 +70,7 @@ Modular knowledge domains that agents can load on-demand. based on task context.
 | `tailwind-patterns`     | Tailwind CSS v4 utilities                                             |
 | `frontend-design`       | UI/UX patterns, design systems                                        |
 | `ui-ux-pro-max`         | 50 styles, 21 palettes, 50 fonts                                      |
+| `vanilla-js-expert`     | Modern pure ES6+, Web APIs                                            |
 
 ### Backend & API
 
@@ -79,6 +80,8 @@ Modular knowledge domains that agents can load on-demand. based on task context.
 | `nestjs-expert`         | NestJS modules, DI, decorators |
 | `nodejs-best-practices` | Node.js async, modules         |
 | `python-patterns`       | Python standards, FastAPI      |
+| `python-expert`         | Python 3.10+ async, OOP        |
+| `agno-expert`           | Agno Agents, local tools, RAG  |
 
 ### Database
 
@@ -272,7 +275,7 @@ For details, see [scripts/README.md](scripts/README.md)
 | Metric              | Value                         |
 | ------------------- | ----------------------------- |
 | **Total Agents**    | 20                            |
-| **Total Skills**    | 41                            |
+| **Total Skills**    | 44                            |
 | **Total Workflows** | 11                            |
 | **Total Scripts**   | 2 (master) + 18 (skill-level) |
 | **Coverage**        | ~90% web/mobile development   |

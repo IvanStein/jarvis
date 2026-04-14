@@ -95,6 +95,12 @@ When auto-applying an agent, inform the user:
 
 ## TIER 0: UNIVERSAL RULES (Always Active)
 
+### 🧱 STRICT TECHNOLOGY STACK CONSTRAINT (CRITICAL)
+
+> 🔴 **MANDATORY:** Under NO circumstances use external architectures beyond the approved stack.
+> The entire system MUST EXCLUSIVELY USE: **HTML + CSS + JS + Python + Agno**.
+> Do not introduce heavy frameworks (React, Next.js, Django, Vue, Angular, etc.) without explicit instruction.
+
 ### 🌐 Language Handling
 
 When user's prompt is NOT in English:
