@@ -13,20 +13,36 @@ document.addEventListener('DOMContentLoaded', () => {
         btn.querySelector('.btn-text').innerText = 'AUTENTICANDO...';
         btn.style.opacity = '0.7';
 
-        setTimeout(() => {
-            console.log('Login attempt recorded:', {
-                email: document.getElementById('email').value,
-                timestamp: new Date().toISOString()
+        try {
+            const response = await fetch('/api/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    email: document.getElementById('email').value,
+                    password: document.getElementById('password').value
+                })
             });
-            
-            // For demo purposes, we just show a message or redirect
-            alert('Acesso negado: Backend não vinculado neste estágio inicial.');
-            
+
+            const data = await response.json();
+
+            if (response.ok) {
+                console.log('Autenticação bem-sucedida:', data);
+                // Armazena a sessão (Token Economy skill: gerenciamento eficiente)
+                localStorage.setItem('jarvis_session', data.session);
+                alert('Acesso concedido! Inicializando Command Center...');
+                // window.location.href = '/dashboard.html';
+            } else {
+                alert(`Erro: ${data.detail || 'Falha na conexão'}`);
+            }
+        } catch (error) {
+            console.error('Network Error:', error);
+            alert('Erro de conexão com o servidor Jarvis.');
+        } finally {
             // Reset
             btn.disabled = false;
             btn.querySelector('.btn-text').innerText = originalText;
             btn.style.opacity = '1';
-        }, 1500);
+        }
     });
 
     // Console aesthetic message
