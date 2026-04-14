@@ -8,8 +8,8 @@
 
 Antigravity Kit is a modular system consisting of:
 
-- **20 Specialist Agents** - Role-based AI personas
-- **44 Skills** - Domain-specific knowledge modules
+- **18 Specialist Agents** - Role-based AI personas
+- **35 Skills** - Domain-specific knowledge modules
 - **11 Workflows** - Slash command procedures
 
 ---
@@ -36,11 +36,9 @@ Specialist AI personas for different domains.
 | ------------------------ | -------------------------- | -------------------------------------------------------- |
 | `orchestrator`           | Multi-agent coordination   | parallel-agents, behavioral-modes                        |
 | `project-planner`        | Discovery, task planning   | brainstorming, plan-writing, architecture                |
-| `frontend-specialist`    | Web UI/UX                  | frontend-design, react-best-practices, tailwind-patterns |
-| `backend-specialist`     | API, business logic        | api-patterns, nodejs-best-practices, database-design     |
-| `database-architect`     | Schema, SQL                | database-design, prisma-expert                           |
-| `mobile-developer`       | iOS, Android, RN           | mobile-design                                            |
-| `game-developer`         | Game logic, mechanics      | game-development                                         |
+| `frontend-specialist`    | Web UI/UX                  | frontend-design, vanilla-js-expert                       |
+| `backend-specialist`     | API, business logic        | api-patterns, python-expert, database-design             |
+| `database-architect`     | Schema, SQL                | database-design, supabase-expert                         |
 | `devops-engineer`        | CI/CD, Docker              | deployment-procedures, docker-expert                     |
 | `security-auditor`       | Security compliance        | vulnerability-scanner, red-team-tactics                  |
 | `penetration-tester`     | Offensive security         | red-team-tactics                                         |
@@ -57,7 +55,7 @@ Specialist AI personas for different domains.
 
 ---
 
-## 🧩 Skills (44)
+## 🧩 Skills (35)
 
 Modular knowledge domains that agents can load on-demand. based on task context.
 
@@ -65,9 +63,7 @@ Modular knowledge domains that agents can load on-demand. based on task context.
 
 | Skill                   | Description                                                           |
 | ----------------------- | --------------------------------------------------------------------- |
-| `react-best-practices`  | React & Next.js performance optimization (Vercel - 57 rules)          |
-| `web-design-guidelines` | Web UI audit - 100+ rules for accessibility, UX, performance (Vercel) |
-| `tailwind-patterns`     | Tailwind CSS v4 utilities                                             |
+| `web-design-guidelines` | Web UI audit - 100+ rules for accessibility, UX, performance          |
 | `frontend-design`       | UI/UX patterns, design systems                                        |
 | `ui-ux-pro-max`         | 50 styles, 21 palettes, 50 fonts                                      |
 | `vanilla-js-expert`     | Modern pure ES6+, Web APIs                                            |
@@ -76,9 +72,7 @@ Modular knowledge domains that agents can load on-demand. based on task context.
 
 | Skill                   | Description                    |
 | ----------------------- | ------------------------------ |
-| `api-patterns`          | REST, GraphQL, tRPC            |
-| `nestjs-expert`         | NestJS modules, DI, decorators |
-| `nodejs-best-practices` | Node.js async, modules         |
+| `api-patterns`          | REST, GraphQL, API design      |
 | `python-patterns`       | Python standards, FastAPI      |
 | `python-expert`         | Python 3.10+ async, OOP        |
 | `agno-expert`           | Agno Agents, local tools, RAG  |
@@ -88,14 +82,7 @@ Modular knowledge domains that agents can load on-demand. based on task context.
 | Skill             | Description                 |
 | ----------------- | --------------------------- |
 | `database-design` | Schema design, optimization |
-| `prisma-expert`   | Prisma ORM, migrations      |
-| `supabase-expert` | Supabase, RLS, @supabase/ssr|
-
-### TypeScript/JavaScript
-
-| Skill               | Description                         |
-| ------------------- | ----------------------------------- |
-| `typescript-expert` | Type-level programming, performance |
+| `supabase-expert` | Supabase, RLS               |
 
 ### Cloud & Infrastructure
 
@@ -104,7 +91,7 @@ Modular knowledge domains that agents can load on-demand. based on task context.
 | `docker-expert`         | Containerization, Compose |
 | `deployment-procedures` | CI/CD, deploy workflows   |
 | `server-management`     | Infrastructure management |
-| `vercel-deploy`         | Next.js on Vercel Network |
+| `vercel-deploy`         | Serverless Python/Vanilla |
 
 ### Testing & Quality
 
@@ -132,17 +119,7 @@ Modular knowledge domains that agents can load on-demand. based on task context.
 | `plan-writing`  | Task planning, breakdown   |
 | `brainstorming` | Socratic questioning       |
 
-### Mobile
 
-| Skill           | Description           |
-| --------------- | --------------------- |
-| `mobile-design` | Mobile UI/UX patterns |
-
-### Game Development
-
-| Skill              | Description           |
-| ------------------ | --------------------- |
-| `game-development` | Game logic, mechanics |
 
 ### SEO & Growth
 
@@ -274,8 +251,8 @@ For details, see [scripts/README.md](scripts/README.md)
 
 | Metric              | Value                         |
 | ------------------- | ----------------------------- |
-| **Total Agents**    | 20                            |
-| **Total Skills**    | 44                            |
+| **Total Agents**    | 18                            |
+| **Total Skills**    | 35                            |
 | **Total Workflows** | 11                            |
 | **Total Scripts**   | 2 (master) + 18 (skill-level) |
 | **Coverage**        | ~90% web/mobile development   |
@@ -286,10 +263,9 @@ For details, see [scripts/README.md](scripts/README.md)
 
 | Need     | Agent                 | Skills                                |
 | -------- | --------------------- | ------------------------------------- |
-| Web App  | `frontend-specialist` | react-best-practices, frontend-design |
-| API      | `backend-specialist`  | api-patterns, nodejs-best-practices   |
-| Mobile   | `mobile-developer`    | mobile-design                         |
-| Database | `database-architect`  | database-design, prisma-expert        |
+| Web App  | `frontend-specialist` | vanilla-js-expert, frontend-design |
+| API      | `backend-specialist`  | api-patterns, python-expert        |
+| Database | `database-architect`  | database-design, supabase-expert   |
 | Security | `security-auditor`    | vulnerability-scanner                 |
 | Testing  | `test-engineer`       | testing-patterns, webapp-testing      |
 | Debug    | `debugger`            | systematic-debugging                  |
