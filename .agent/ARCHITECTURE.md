@@ -9,7 +9,7 @@
 Antigravity Kit is a modular system consisting of:
 
 - **18 Specialist Agents** - Role-based AI personas
-- **35 Skills** - Domain-specific knowledge modules
+- **36 Skills** - Domain-specific knowledge modules
 - **11 Workflows** - Slash command procedures
 
 ---
@@ -55,7 +55,7 @@ Specialist AI personas for different domains.
 
 ---
 
-## 🧩 Skills (35)
+## 🧩 Skills (36)
 
 Modular knowledge domains that agents can load on-demand. based on task context.
 
@@ -134,6 +134,12 @@ Modular knowledge domains that agents can load on-demand. based on task context.
 | -------------------- | ------------------------- |
 | `bash-linux`         | Linux commands, scripting |
 | `powershell-windows` | Windows PowerShell        |
+
+### Google & AI Tools
+
+| Skill                | Description               |
+| -------------------- | ------------------------- |
+| `google-integration` | Google Login, Calendar & NotebookLM |
 
 ### Other
 
@@ -252,7 +258,7 @@ For details, see [scripts/README.md](scripts/README.md)
 | Metric              | Value                         |
 | ------------------- | ----------------------------- |
 | **Total Agents**    | 18                            |
-| **Total Skills**    | 35                            |
+| **Total Skills**    | 36                            |
 | **Total Workflows** | 11                            |
 | **Total Scripts**   | 2 (master) + 18 (skill-level) |
 | **Coverage**        | ~90% web/mobile development   |
