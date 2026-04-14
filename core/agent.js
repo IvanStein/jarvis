@@ -1,5 +1,5 @@
 import { callGemini } from './llm.js';
-import { saveMessage, getLastMessages, getUserFacts, getSpecialistConfig, updateSpecialistConfig } from '../memory/memory.js';
+import { saveMessage, getLastMessages, getUserFacts, saveFact, getSpecialistConfig, updateSpecialistConfig } from '../memory/memory.js';
 import { SPECIALISTS, routeToSpecialist } from './specialists.js';
 import { learnFromYouTube } from '../rag/ingest.js';
 
@@ -49,7 +49,6 @@ export async function runAgent(userInput, userId, conversationId = 'default', ov
         const factResult = factCheck?.trim() || "NENHUM";
         
         if (factResult && !factResult.toUpperCase().includes("NENHUM") && factResult.length > 5) {
-            const { saveFact } = await import('../memory/memory.js');
             await saveFact(userId, factResult);
             console.log(`[MEMÓRIA] Dado permanente aprendido: ${factResult}`);
         }

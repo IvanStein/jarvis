@@ -223,6 +223,9 @@ export default function Home() {
         if (!response.ok) {
           throw new Error(data.error || `Erro ${response.status}: Falha na API`);
         }
+        if (data.dbError) {
+          throw new Error(`⚠️ Banco de Dados OFF: As credenciais da Supabase não foram encontradas pelo servidor. Se estiver usando Vercel, faltam as variáveis de ambiente. Detalhe: ${data.dbError}`);
+        }
         
         addMessageToActive(currentConvId, { 
           id: (Date.now() + 1).toString(),

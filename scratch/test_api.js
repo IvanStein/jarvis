@@ -5,9 +5,10 @@ async function testApi() {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-                message: 'test from api',
+                message: 'Jarvis, lembrete: eu nasci no dia 17/01/1980',
                 userId: 'ivan_stein',
-                conversationId: '1'
+                conversationId: Date.now().toString(),
+                apiKey: process.env.GEMINI_API_KEY
             })
         });
         const text = await res.text();

@@ -1,16 +1,9 @@
-
+import 'dotenv/config';
 import { runAgent } from '../core/agent.js';
-import dotenv from 'dotenv';
-dotenv.config();
 
-async function test() {
-    try {
-        console.log('Testando runAgent...');
-        const result = await runAgent('oi', 'test_user');
-        console.log('Resultado:', result);
-    } catch (error) {
-        console.error('ERRO NO TESTE:', error);
-    }
+async function testAgent() {
+    process.env.GEMINI_API_KEY = process.env.GEMINI_API_KEY || "TEST";
+    const res = await runAgent("Jarvis, lembrete importante: meu cpf é 123456789", "ivan_stein", "test12345", process.env.GEMINI_API_KEY);
+    console.log("Response:", res);
 }
-
-test();
+testAgent();
